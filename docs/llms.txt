@@ -1,0 +1,60 @@
+# mcp.build
+
+> Community repository for open source MCPs (Model Context Protocol) that use the Hal9 open source agent structure: plain stdin/stdout agents (`input()` / `print()`) for easy deployment and interoperability.
+
+Homepage: https://hal9ai.github.io/mcp.build/
+Repository: https://github.com/hal9ai/mcp.build
+Full agent rules: https://github.com/hal9ai/mcp.build/blob/main/AGENTS.md
+Catalog: https://hal9ai.github.io/mcp.build/agents.json
+
+## Audience
+
+This project is intentionally easy for coding agents (Claude Code, Grok Build, Cursor, Codex, etc.) to contribute to. Prefer small PRs that add one agent folder and its deploy workflow.
+
+## Agent contract
+
+Every agent is a top-level directory with:
+
+- `app.py` — required. Read user text via `input()`, write result via `print()`. Do not require the `hal9` Python package unless you need session persistence helpers.
+- `requirements.txt` — optional Python deps
+- `hal9.yaml` — optional (`welcome:` message)
+
+Deploy when the folder changes via `.github/workflows/<name>.yaml` using the same pattern as `send-email`:
+
+```yaml
+on:
+  push:
+    branches: [main]
+    paths:
+      - <name>/**
+      - .github/workflows/<name>.yaml
+# steps: setup-python, pip install hal9, checkout, changed-files, then:
+# hal9 deploy <name> --name <name> --access public --title "..." --description "..."
+# Secret: HAL9_TOKEN
+```
+
+After adding an agent:
+
+1. Append entry to `docs/agents.json`
+2. Mention it in root `README.md`
+3. Do not commit secrets or API keys
+
+## Existing agents
+
+- send-email — path `send-email/` — Groq tool use + Resend email API. Example: `send email to javier@hal9.ai with text hello!`
+
+## Local test pattern
+
+```bash
+cd <agent>
+pip install -r requirements.txt
+# export required API keys
+echo "<prompt>" | python app.py
+```
+
+## Do not
+
+- Add heavy app frameworks (Flask/FastAPI) for simple tool agents
+- Put multiple unrelated tools in one folder
+- Change unrelated agents in the same PR unless required
+- Commit `.env`, keys, or `__pycache__`

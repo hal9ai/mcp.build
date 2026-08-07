@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "name": "mcp.build",
+  "description": "Catalog of Hal9-style agents / open source MCPs in this repository.",
+  "homepage": "https://hal9ai.github.io/mcp.build/",
+  "repository": "https://github.com/hal9ai/mcp.build",
+  "agent_instructions": [
+    "https://github.com/hal9ai/mcp.build/blob/main/AGENTS.md",
+    "https://hal9ai.github.io/mcp.build/llms.txt"
+  ],
+  "agents": [
+    {
+      "id": "send-email",
+      "name": "send-email",
+      "description": "Send emails via Resend from natural language prompts using Groq tool use.",
+      "path": "send-email",
+      "repo_path": "https://github.com/hal9ai/mcp.build/tree/main/send-email",
+      "entry": "send-email/app.py",
+      "runtime": "python",
+      "io": "stdin/stdout",
+      "dependencies": ["groq", "resend"],
+      "env": [
+        { "name": "GROQ_API_KEY", "required": true },
+        { "name": "RESEND_API_KEY", "required": true },
+        { "name": "RESEND_FROM", "required": false },
+        { "name": "GROQ_MODEL", "required": false }
+      ],
+      "workflow": ".github/workflows/send-email.yaml",
+      "example_prompt": "send email to javier@hal9.ai with text hello!"
+    }
+  ]
+}
