@@ -10,9 +10,11 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        url:
-          - https://api.devel.hal9.com
-          - https://next.hal9.ai
+        include:
+          - url: https://api.devel.hal9.com
+            token: HAL9_DEVEL_TOKEN
+          - url: https://next.hal9.ai
+            token: HAL9_NEXT_TOKEN
     steps:
       - name: Set up Python 3.10
         uses: actions/setup-python@v5
@@ -33,7 +35,7 @@ jobs:
       - name: Deploy send-email
         env:
           ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
-          HAL9_TOKEN: ${{ secrets.HAL9_DEVEL_TOKEN }}
+          HAL9_TOKEN: ${{ secrets[matrix.token] }}
         run: |
           if echo "${ALL_CHANGED_FILES}" | grep -qE "send-email/|\.github/workflows/send-email\.yaml"; then
             echo "send-email (or its workflow) changed — deploying to ${{ matrix.url }}"
