@@ -15,18 +15,18 @@ jobs:
           - https://next.hal9.ai
     steps:
       - name: Set up Python 3.10
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v5
         with:
           python-version: "3.10"
 
       - name: Install Hal9
         run: pip install hal9
 
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v4
 
       - name: Get changed files
         id: changed-files
-        uses: tj-actions/changed-files@v45
+        uses: tj-actions/changed-files@v47
         with:
           since_last_remote_commit: true
 
