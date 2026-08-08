@@ -11,6 +11,11 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        url:
+          - https://api.devel.hal9.com
+          - https://next.hal9.ai
     steps:
       - name: Set up Python 3.10
         uses: actions/setup-python@v1
@@ -31,22 +36,16 @@ jobs:
       - name: Deploy send-email
         env:
           ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
-          HAL9_TOKEN: ${{ secrets.HAL9_TOKEN }}
+          HAL9_TOKEN: ${{ secrets.HAL9_DEVEL_TOKEN }}
         run: |
-          if echo "${ALL_CHANGED_FILES}" | grep -q "send-email/"; then
-            echo "send-email changed — deploying to Hal9"
+          if echo "${ALL_CHANGED_FILES}" | grep -qE "send-email/|\.github/workflows/send-email\.yaml"; then
+            echo "send-email (or its workflow) changed — deploying to ${{ matrix.url }}"
             hal9 deploy send-email \
               --name send-email \
+              --url ${{ matrix.url }} \
               --access public \
               --title "Send Email" \
-              --description "Send emails via Resend using natural language prompts";
-          elif echo "${ALL_CHANGED_FILES}" | grep -q ".github/workflows/send-email.yaml"; then
-            echo "workflow changed — deploying to Hal9"
-            hal9 deploy send-email \
-              --name send-email \
-              --access public \
-              --title "Send Email" \
-              --description "Send emails via Resend using natural language prompts";
+              --description "Send emails via Resend using natural language prompts"
           else
             echo "No deployable send-email changes"
           fi
