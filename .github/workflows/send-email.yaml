@@ -1,12 +1,9 @@
-name: Deploy send-email
+name: deploy
 
 on:
   push:
     branches:
       - main
-    paths:
-      - .github/workflows/send-email.yaml
-      - send-email/**
 
 jobs:
   deploy:
