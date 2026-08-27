@@ -273,16 +273,21 @@ section p {
 }
 
 .card {
+  display: block;
   background: var(--bg-elevated);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 1.1rem 1.2rem;
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
   transition: border-color 0.15s, background 0.15s;
 }
 
 .card:hover {
-  border-color: var(--text-dim);
+  border-color: var(--accent-border);
   background: var(--bg-hover);
+  text-decoration: none;
 }
 
 .card-top {
@@ -298,14 +303,10 @@ section p {
   font-size: 0.95rem;
   font-family: var(--mono);
   font-weight: 500;
-}
-
-.card h3 a {
   color: var(--text);
-  text-decoration: none;
 }
 
-.card h3 a:hover {
+.card:hover h3 {
   color: var(--accent);
 }
 
@@ -319,6 +320,47 @@ section p {
 .card p {
   margin: 0;
   font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+/* why mcp.build — plain list, deliberately not link-like or clickable */
+.why-list {
+  list-style: none;
+  display: grid;
+  gap: 1rem;
+}
+
+.why-list li {
+  padding-left: 1rem;
+  border-left: 2px solid var(--border);
+}
+
+.why-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.4rem;
+}
+
+.why-list h3 {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.why-list .tag {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+
+.why-list p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-muted);
 }
 
 /* steps */

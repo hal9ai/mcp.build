@@ -42,41 +42,41 @@
       </div>
     </header>
 
-    <section id="why">
-      <h2>Why mcp.build</h2>
-      <div class="cards">
-        <div class="card">
-          <div class="card-top"><h3>Ready to use</h3><span class="tag">hosted</span></div>
-          <p>Every MCP is already deployed. No servers to run, no infrastructure to manage — just connect and go.</p>
-        </div>
-        <div class="card">
-          <div class="card-top"><h3>Natural language in</h3><span class="tag">agent-friendly</span></div>
-          <p>MCPs on this site are built to take plain prompts and turn them into the right tool calls, so agents don't need rigid schemas to get useful work done.</p>
-        </div>
-        <div class="card">
-          <div class="card-top"><h3>Open source</h3><span class="tag">community</span></div>
-          <p>Every MCP is open source and built on the <a href="https://github.com/hal9ai/hal9">Hal9</a> agent structure. Anyone can inspect, self-host, or contribute a new one.</p>
-        </div>
-      </div>
-    </section>
-
     <section id="mcps">
       <h2>Available MCPs</h2>
       <div class="cards" id="agent-list">
         <!-- populated from agents.json; static fallback below -->
-        <article class="card">
+        <a class="card" href="send-email/">
           <div class="card-top">
-            <h3><a href="send-email/">send-email</a></h3>
+            <h3>send-email</h3>
             <span class="tag">/send-email</span>
           </div>
           <p>Send emails from natural language prompts.</p>
-        </article>
+        </a>
       </div>
       <p style="margin-top: 1rem; font-size: 0.85rem;">
         Machine-readable catalog: <a href="agents.json"><code>agents.json</code></a>
         · Agent instructions: <a href="llms.txt"><code>llms.txt</code></a>
         · Want to add one? See <a href="https://github.com/hal9ai/mcp.build#contributing">contributing on GitHub</a>
       </p>
+    </section>
+
+    <section id="why">
+      <h2>Why mcp.build</h2>
+      <ul class="why-list">
+        <li>
+          <div class="why-top"><h3>Ready to use</h3><span class="tag">hosted</span></div>
+          <p>Every MCP is already deployed. No servers to run, no infrastructure to manage — just connect and go.</p>
+        </li>
+        <li>
+          <div class="why-top"><h3>Natural language in</h3><span class="tag">agent-friendly</span></div>
+          <p>MCPs on this site are built to take plain prompts and turn them into the right tool calls, so agents don't need rigid schemas to get useful work done.</p>
+        </li>
+        <li>
+          <div class="why-top"><h3>Open source</h3><span class="tag">community</span></div>
+          <p>Every MCP is open source and built on the <a href="https://github.com/hal9ai/hal9">Hal9</a> agent structure. Anyone can inspect, self-host, or contribute a new one.</p>
+        </li>
+      </ul>
     </section>
 
     <footer class="footer">
@@ -101,13 +101,13 @@
         list.innerHTML = data.agents
           .map(
             (a) => `
-          <article class="card">
+          <a class="card" href="${a.docs_path || "./" + a.id + "/"}">
             <div class="card-top">
-              <h3><a href="${a.docs_path || "./" + a.id + "/"}">${a.name}</a></h3>
+              <h3>${a.name}</h3>
               <span class="tag">/${a.id}</span>
             </div>
             <p>${a.description}</p>
-          </article>`
+          </a>`
           )
           .join("");
       })
