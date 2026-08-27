@@ -71,7 +71,8 @@ Static site lives in [`docs/`](./docs) — no build step.
 
 | Path | Role |
 | --- | --- |
-| [`docs/index.html`](./docs/index.html) | Landing page |
+| [`docs/index.html`](./docs/index.html) | Landing page — what mcp.build is + list of available MCPs |
+| [`docs/send-email/index.html`](./docs/send-email/index.html) | Dedicated page per MCP (usage, "Add to Claude", etc.) — template for new MCPs |
 | [`docs/css/styles.css`](./docs/css/styles.css) | Styles |
 | [`docs/agents.json`](./docs/agents.json) | Machine-readable agent catalog |
 | [`docs/llms.txt`](./docs/llms.txt) | Short instructions for LLMs / agents |
@@ -79,16 +80,72 @@ Static site lives in [`docs/`](./docs) — no build step.
 
 **Enable Pages:** repo **Settings → Pages → Build and deployment** → Source: **Deploy from a branch** → Branch: `main` → Folder: `/docs`.
 
-## Contributing
+## Contributing an agent (MCP)
 
-Full checklist: [`AGENTS.md`](./AGENTS.md).
+This repo is designed so **coding agents** (Claude Code, Grok Build, Cursor, Codex, …)
+and humans can contribute a new MCP with minimal guesswork. Full checklist:
+[`AGENTS.md`](./AGENTS.md). Use [`send-email/`](./send-email) as the reference
+implementation and [`.github/workflows/send-email.yaml`](./.github/workflows/send-email.yaml)
+as the deploy pattern.
 
-1. Add a new folder at the repo root with at least `app.py`.
-2. Prefer `input()` / `print()` (or any stdin/stdout) so the agent stays Hal9- and MCP-friendly.
+### Expected layout
+
+```text
+# minimum
+my-tool/
+  app.py               # input() → work → print()
+  requirements.txt     # optional
+  hal9.yaml            # optional welcome
+
+# also update
+.github/workflows/my-tool.yaml
+docs/agents.json
+docs/my-tool/index.html   # dedicated docs page for the MCP
+README.md
+```
+
+### Minimal agent
+
+```python
+# my-tool/app.py
+prompt = input()
+# … call APIs, tools, models …
+print(result)
+```
+
+### Steps
+
+1. Create a new folder at the repo root, e.g. `my-tool/`. Keep the name short, kebab-case.
+2. Add `app.py`. Use `input()` / `print()` (or any stdin/stdout) so the agent stays
+   Hal9- and MCP-friendly. Prefer no `hal9` package unless you need session state.
 3. Add a `requirements.txt` if you need third-party packages.
-4. Optionally add `hal9.yaml` for a welcome message.
-5. Add a GitHub Actions workflow that deploys when that folder changes, following the `send-email` pattern.
-6. Register the agent in [`docs/agents.json`](./docs/agents.json) and mention it here.
+4. Optionally add `hal9.yaml` with a `welcome:` message.
+5. Add a GitHub Actions workflow, `.github/workflows/my-tool.yaml`, that deploys when
+   that folder changes:
+
+   ```yaml
+   on:
+     push:
+       branches: [main]
+       paths:
+         - my-tool/**
+         - .github/workflows/my-tool.yaml
+   # job: pip install hal9 → checkout → if my-tool/ changed:
+   hal9 deploy my-tool --name my-tool --access public \
+     --title "My Tool" --description "…"
+   ```
+
+   Secret: `HAL9_TOKEN` (agent runtime keys like `GROQ_API_KEY` are configured on the
+   Hal9 side / local env — never committed).
+6. Register the agent in [`docs/agents.json`](./docs/agents.json) (include an `id`,
+   `description`, and `docs_path` pointing at its docs page) and mention it in the
+   table above.
+7. Add a dedicated docs page at `docs/<my-tool>/index.html` so it shows up at
+   `https://hal9ai.github.io/mcp.build/my-tool/` (or `https://mcp.build/my-tool/`).
+   Copy [`docs/send-email/index.html`](./docs/send-email/index.html) as a template —
+   it covers what the MCP does, how agents use it, and how to add it to Claude and
+   other MCP clients.
+8. Do not commit secrets; document required env vars in this README.
 
 ## License
 

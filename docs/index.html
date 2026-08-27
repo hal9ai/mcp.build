@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>mcp.build — open source MCPs, Hal9 agents</title>
-  <meta name="description" content="Community to build open source MCPs using the Hal9 agent structure. Designed so coding agents like Claude Code and Grok Build can contribute easily." />
+  <title>mcp.build — ready-to-use MCPs for AI agents</title>
+  <meta name="description" content="mcp.build is a platform of ready-to-use MCPs (Model Context Protocol servers) that make it super easy for AI agents to interact with real-world tools like email." />
   <meta name="theme-color" content="#fafafa" media="(prefers-color-scheme: light)" />
   <meta name="theme-color" content="#0a0a0b" media="(prefers-color-scheme: dark)" />
   <meta name="color-scheme" content="light dark" />
@@ -19,177 +19,68 @@
     <nav class="nav">
       <a class="logo" href="./">mcp<span>.</span>build</a>
       <ul class="nav-links">
-        <li><a href="#agents">Agents</a></li>
-        <li><a href="#contribute">Contribute</a></li>
+        <li><a href="#mcps">MCPs</a></li>
+        <li><a href="https://github.com/hal9ai/mcp.build#contributing">Contribute</a></li>
         <li><a href="https://github.com/hal9ai/mcp.build">GitHub</a></li>
       </ul>
     </nav>
 
     <header class="hero">
-      <div class="badge">open source · MCP · Hal9</div>
-      <h1>Build MCPs as simple agents</h1>
+      <div class="badge">open source · MCP catalog</div>
+      <h1>Ready-to-use MCPs for AI agents</h1>
       <p class="lead">
-        mcp.build is a community for open source
+        mcp.build is a platform of open source
         <a href="https://modelcontextprotocol.io">MCPs</a>
-        that use the
-        <a href="https://github.com/hal9ai/hal9">Hal9</a>
-        agent shape — <code>input()</code> and <code>print()</code> —
-        for easy deploy and interoperability. Built so humans and coding agents can contribute.
+        (Model Context Protocol servers) — hosted, ready-to-use tools that make it
+        super easy for AI agents like Claude to interact with real-world services.
+        Pick an MCP below, connect it in a couple of clicks, and start using it from
+        a plain natural-language prompt.
       </p>
       <div class="actions">
-        <a class="btn btn-primary" href="#contribute">Contribute an agent</a>
+        <a class="btn btn-primary" href="#mcps">Browse MCPs</a>
         <a class="btn btn-ghost" href="https://github.com/hal9ai/mcp.build">View on GitHub</a>
       </div>
     </header>
 
     <section id="why">
-      <h2>Why this shape</h2>
+      <h2>Why mcp.build</h2>
       <div class="cards">
         <div class="card">
-          <div class="card-top"><h3>stdin / stdout</h3><span class="tag">simple</span></div>
-          <p>No framework required. Read with <code>input()</code>, write with <code>print()</code>. Same code runs as chat, API, or MCP tool.</p>
+          <div class="card-top"><h3>Ready to use</h3><span class="tag">hosted</span></div>
+          <p>Every MCP is already deployed. No servers to run, no infrastructure to manage — just connect and go.</p>
         </div>
         <div class="card">
-          <div class="card-top"><h3>Deploy in one step</h3><span class="tag">hal9</span></div>
-          <p>Push a folder, CI deploys to Hal9 when it changes. Local: <code>hal9 deploy ./my-agent</code>.</p>
+          <div class="card-top"><h3>Natural language in</h3><span class="tag">agent-friendly</span></div>
+          <p>MCPs on this site are built to take plain prompts and turn them into the right tool calls, so agents don't need rigid schemas to get useful work done.</p>
         </div>
         <div class="card">
-          <div class="card-top"><h3>Agent-readable</h3><span class="tag">claude · grok</span></div>
-          <p>Layouts, catalog, and rules live in plain files so Claude Code, Grok Build, and similar tools can open a PR without guesswork.</p>
+          <div class="card-top"><h3>Open source</h3><span class="tag">community</span></div>
+          <p>Every MCP is open source and built on the <a href="https://github.com/hal9ai/hal9">Hal9</a> agent structure. Anyone can inspect, self-host, or contribute a new one.</p>
         </div>
       </div>
     </section>
 
-    <section id="agents">
-      <h2>Agents</h2>
+    <section id="mcps">
+      <h2>Available MCPs</h2>
       <div class="cards" id="agent-list">
         <!-- populated from agents.json; static fallback below -->
         <article class="card">
           <div class="card-top">
-            <h3><a href="https://github.com/hal9ai/mcp.build/tree/main/send-email">send-email</a></h3>
+            <h3><a href="send-email/">send-email</a></h3>
             <span class="tag">/send-email</span>
           </div>
-          <p>Send email via Resend from natural language. Groq tool use maps the prompt to Resend.</p>
+          <p>Send emails from natural language prompts.</p>
         </article>
       </div>
       <p style="margin-top: 1rem; font-size: 0.85rem;">
         Machine-readable catalog: <a href="agents.json"><code>agents.json</code></a>
         · Agent instructions: <a href="llms.txt"><code>llms.txt</code></a>
-        · Repo: <a href="https://github.com/hal9ai/mcp.build/blob/main/AGENTS.md"><code>AGENTS.md</code></a>
+        · Want to add one? See <a href="https://github.com/hal9ai/mcp.build#contributing">contributing on GitHub</a>
       </p>
-    </section>
-
-    <section id="contribute">
-      <h2>Contribute</h2>
-      <p>
-        Designed for coding agents (Claude Code, Grok Build, Cursor, Codex, …) and humans.
-        Follow the checklist — no special tooling beyond Python and Git.
-      </p>
-
-      <div class="callout">
-        <p>
-          <strong>For agents:</strong> read root <code>AGENTS.md</code> and <code>docs/llms.txt</code>,
-          then open a PR that only touches your new agent folder + deploy workflow.
-        </p>
-      </div>
-
-      <ol class="steps">
-        <li>
-          <div>
-            <strong>Create a folder</strong>
-            <span>One agent per top-level directory, e.g. <code>my-tool/</code>. Keep the name short, kebab-case.</span>
-          </div>
-        </li>
-        <li>
-          <div>
-            <strong>Add <code>app.py</code></strong>
-            <span>Use <code>input()</code> / <code>print()</code> (or any stdin/stdout). Prefer no Hal9 package unless you need session state.</span>
-          </div>
-        </li>
-        <li>
-          <div>
-            <strong>Add deps + optional config</strong>
-            <span><code>requirements.txt</code> if needed; <code>hal9.yaml</code> for welcome text.</span>
-          </div>
-        </li>
-        <li>
-          <div>
-            <strong>Wire deploy CI</strong>
-            <span>Copy <code>.github/workflows/send-email.yaml</code>, point paths and <code>hal9 deploy</code> at your folder.</span>
-          </div>
-        </li>
-        <li>
-          <div>
-            <strong>Register the agent</strong>
-            <span>Append an entry to <code>docs/agents.json</code> and mention it in the root README.</span>
-          </div>
-        </li>
-      </ol>
-
-      <h3>Expected layout</h3>
-      <div class="pre-wrap">
-        <pre class="tree"><span class="c"># minimum</span>
-<span class="dir">my-tool/</span>
-  <span class="file">app.py</span>              <span class="c"># input() → work → print()</span>
-  requirements.txt    <span class="c"># optional</span>
-  hal9.yaml           <span class="c"># optional welcome</span>
-
-<span class="c"># also update</span>
-.github/workflows/<span class="file">my-tool.yaml</span>
-docs/<span class="file">agents.json</span>
-README.md</pre>
-      </div>
-
-      <h3>Minimal agent</h3>
-      <div class="pre-wrap">
-        <pre><span class="c"># my-tool/app.py</span>
-prompt = <span class="k">input</span>()
-<span class="c"># … call APIs, tools, models …</span>
-<span class="k">print</span>(result)</pre>
-      </div>
-
-      <h3>Deploy workflow pattern</h3>
-      <div class="pre-wrap">
-        <pre><span class="c"># .github/workflows/my-tool.yaml</span>
-<span class="k">on</span>:
-  push:
-    branches: [main]
-    paths:
-      - my-tool/**
-      - .github/workflows/my-tool.yaml
-
-<span class="c"># job: pip install hal9 → checkout → if my-tool/ changed:</span>
-hal9 deploy my-tool --name my-tool --access public \
-  --title "My Tool" --description "…"</pre>
-      </div>
-
-      <h3>Secrets (repo)</h3>
-      <table class="meta">
-        <thead>
-          <tr><th>Secret</th><th>Used for</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>HAL9_TOKEN</td><td>GitHub Actions deploy via <code>hal9 deploy</code></td></tr>
-        </tbody>
-      </table>
-      <p style="font-size: 0.875rem;">
-        Agent runtime keys (e.g. <code>GROQ_API_KEY</code>, <code>RESEND_API_KEY</code>) are configured on the Hal9 side / local env — not committed.
-      </p>
-    </section>
-
-    <section id="local">
-      <h2>Local run</h2>
-      <div class="pre-wrap">
-        <pre>cd send-email
-pip install -r requirements.txt
-export GROQ_API_KEY=…
-export RESEND_API_KEY=…
-echo "send email to you@example.com with text hello!" | python app.py</pre>
-      </div>
     </section>
 
     <footer class="footer">
-      <span>mcp.build · Hal9 agent structure · open source MCPs</span>
+      <span>mcp.build · open source MCPs for AI agents</span>
       <span>
         <a href="https://github.com/hal9ai/mcp.build">GitHub</a>
         ·
@@ -212,7 +103,7 @@ echo "send email to you@example.com with text hello!" | python app.py</pre>
             (a) => `
           <article class="card">
             <div class="card-top">
-              <h3><a href="${a.repo_path || "#"}">${a.name}</a></h3>
+              <h3><a href="${a.docs_path || "./" + a.id + "/"}">${a.name}</a></h3>
               <span class="tag">/${a.id}</span>
             </div>
             <p>${a.description}</p>
