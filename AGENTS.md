@@ -25,8 +25,9 @@ Site (GitHub Pages from `/docs`): see `docs/index.html`, `docs/llms.txt`, `docs/
 - [ ] Add `requirements.txt` if third-party packages are required
 - [ ] Optionally add `hal9.yaml` with `welcome:`
 - [ ] Add `.github/workflows/<kebab-name>.yaml` that deploys when that folder changes
-- [ ] Register in `docs/agents.json`
-- [ ] Document briefly in root `README.md`
+- [ ] Register in `docs/agents.json` (`id`, `description`, `docs_path: "<kebab-name>/"`)
+- [ ] Add a dedicated docs page at `docs/<kebab-name>/index.html` (copy `docs/send-email/index.html` as a template) so it shows up on the landing page and at its own route
+- [ ] Document briefly in root `README.md` (full contribution checklist lives there, not on the website)
 - [ ] Do not commit secrets; document env vars in README
 
 ### `app.py` shape
@@ -47,17 +48,21 @@ Mirror `.github/workflows/send-email.yaml`:
 
 ## Editing the website
 
-Static site lives in `docs/` for GitHub Pages (branch deploy, `/docs` folder).
+Static site lives in `docs/` for GitHub Pages (branch deploy, `/docs` folder). There
+is no framework or build step — every "route" is a plain folder with an `index.html`.
 
 | File | Purpose |
 | --- | --- |
-| `docs/index.html` | Landing page |
-| `docs/css/styles.css` | Styles |
-| `docs/agents.json` | Machine-readable catalog (UI loads this) |
+| `docs/index.html` | Landing page — explains what mcp.build is and lists available MCPs, each linking to its own page. No agent-contribution instructions here anymore; that content lives in root `README.md` / this file. |
+| `docs/<mcp-id>/index.html` | Dedicated page per MCP, e.g. `docs/send-email/index.html` → served at `/send-email/`. Covers: description, how agents use it, how to add it to Claude (and other MCP clients), self-host instructions. Copy `docs/send-email/index.html` as the template for a new MCP. |
+| `docs/css/styles.css` | Shared styles (reuse existing classes: `card`, `steps`, `callout`, `meta`, `pre-wrap`, `btn`) |
+| `docs/agents.json` | Machine-readable catalog (landing page JS loads this to render/override the MCP list). Each entry should include `id`, `name`, `description`, and `docs_path` (e.g. `"send-email/"`). |
 | `docs/llms.txt` | Short instructions for LLMs / agents |
 | `docs/.nojekyll` | Disable Jekyll on Pages |
 
-Keep the site minimal: no build step, no framework.
+Keep the site minimal: no build step, no framework. When adding a new MCP page,
+mirror the section structure of `docs/send-email/index.html` so pages stay consistent
+and easy to generate.
 
 ## PR hygiene
 

@@ -11,6 +11,14 @@ Catalog: https://hal9ai.github.io/mcp.build/agents.json
 
 This project is intentionally easy for coding agents (Claude Code, Grok Build, Cursor, Codex, etc.) to contribute to. Prefer small PRs that add one agent folder and its deploy workflow.
 
+## Website structure
+
+The homepage (`docs/index.html`) explains what mcp.build is and lists available MCPs;
+it does not contain contribution instructions (those live in `README.md` / `AGENTS.md`).
+Each MCP has its own page at `docs/<id>/index.html`, served at `/<id>/`
+(e.g. `docs/send-email/index.html` → https://hal9ai.github.io/mcp.build/send-email/).
+Use `docs/send-email/index.html` as the template when adding a new one.
+
 ## Agent contract
 
 Every agent is a top-level directory with:
