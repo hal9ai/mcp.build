@@ -42,7 +42,7 @@ The agent:
 | `GROQ_API_KEY` | Yes | API key from [console.groq.com](https://console.groq.com) |
 | `RESEND_API_KEY` | Yes | API key from [resend.com](https://resend.com) |
 | `RESEND_FROM` | No | Sender address (default: `mcp.build <onboarding@resend.dev>`) |
-| `GROQ_MODEL` | No | Model id (default: `llama-3.3-70b-versatile`) |
+| `GROQ_MODEL` | No | Model id (default: `qwen/qwen3.6-27b`) |
 
 **Local run**
 
