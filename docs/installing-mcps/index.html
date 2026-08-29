@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Installing MCPs — mcp.build</title>
+  <meta name="description" content="How to add mcp.build's hosted MCPs to Claude, Claude Code, and other MCP-compatible clients." />
+  <meta name="theme-color" content="#fafafa" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#0a0a0b" media="(prefers-color-scheme: dark)" />
+  <meta name="color-scheme" content="light dark" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/styles.css" />
+  <link rel="alternate" type="text/plain" href="../llms.txt" title="LLM instructions" />
+</head>
+<body>
+  <div class="wrap">
+    <nav class="nav">
+      <a class="logo" href="../">mcp<span>.</span>build</a>
+      <ul class="nav-links">
+        <li><a href="../#mcps">MCPs</a></li>
+        <li><a href="../installing-mcps/">Installing MCPs</a></li>
+        <li><a href="https://github.com/hal9ai/mcp.build">GitHub</a></li>
+      </ul>
+    </nav>
+
+    <header class="hero">
+      <div class="badge">guide</div>
+      <h1>Installing MCPs</h1>
+      <p class="lead">
+        Every MCP on mcp.build is already hosted — there's nothing to run. Connecting
+        one to Claude or another MCP client just means pointing that client at the
+        MCP's endpoint URL. This page covers the general steps once, so each MCP's
+        own docs page can stay short.
+      </p>
+    </header>
+
+    <section id="add-to-claude">
+      <h2>Add to Claude</h2>
+      <p>
+        Claude (claude.ai and Claude Desktop) connects to any mcp.build MCP as a
+        <strong>remote MCP custom connector</strong>. Every MCP's page has an
+        <strong>"Add to Claude"</strong> button that opens Claude's connector settings
+        with the name and URL already filled in:
+      </p>
+      <ol class="steps">
+        <li><div><strong>Click "Add to Claude"</strong><span>On any MCP's page — it opens <code>claude.ai/customize/connectors</code> with a pre-filled "Add custom connector" form</span></div></li>
+        <li><div><strong>Review and confirm</strong><span>Check the connector name and URL, then click <strong>Add</strong></span></div></li>
+        <li><div><strong>Authorize, if asked</strong><span>Some MCPs require an auth header or token — the MCP's own page will say if one is needed</span></div></li>
+        <li><div><strong>Start prompting</strong><span>Ask Claude to do the thing the MCP does — it will call the right tool automatically</span></div></li>
+      </ol>
+      <p>
+        Prefer to add it by hand instead of using the button? Open
+        <a href="https://claude.ai/customize/connectors">claude.ai/customize/connectors</a>,
+        click the <code>+</code> button, choose <strong>Add custom connector</strong>, and
+        paste in the MCP's endpoint URL yourself.
+      </p>
+    </section>
+
+    <section id="claude-code">
+      <h2>Claude Code / CLI</h2>
+      <p>
+        If you use Claude Code, add any mcp.build MCP as a remote server from the
+        command line:
+      </p>
+      <div class="pre-wrap">
+        <pre>claude mcp add &lt;name&gt; &lt;mcp-endpoint-url&gt;</pre>
+      </div>
+      <div class="callout">
+        <p>
+          <strong>Example:</strong>
+          <code>claude mcp add send-email https://next.hal9.ai/mcp/mcpbuild/send-email</code>
+        </p>
+      </div>
+    </section>
+
+    <section id="other-clients">
+      <h2>Other MCP clients</h2>
+      <p>
+        Any MCP-compatible client works the same way — add the MCP's endpoint URL as
+        a remote server in the client's MCP settings:
+      </p>
+      <table class="meta">
+        <thead>
+          <tr><th>Platform</th><th>How</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Claude / Claude Desktop</td><td>Use the MCP's "Add to Claude" button, or Settings → Connectors → Add custom connector</td></tr>
+          <tr><td>Claude Code</td><td><code>claude mcp add &lt;name&gt; &lt;url&gt;</code></td></tr>
+          <tr><td>Cursor / other MCP clients</td><td>Add as a remote MCP server in the client's MCP settings, using the same endpoint URL</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="finding-endpoints">
+      <h2>Finding an endpoint</h2>
+      <p>
+        Every MCP's endpoint URL is shown at the top of its docs page in a copyable
+        box, and also listed in the machine-readable
+        <a href="../agents.json"><code>agents.json</code></a> catalog under each
+        agent's <code>endpoint</code> field. For example, send-email's endpoint is:
+      </p>
+      <div class="endpoint">
+        <div>
+          <span class="endpoint-label">MCP endpoint · send-email</span>
+          <code>https://next.hal9.ai/mcp/mcpbuild/send-email</code>
+        </div>
+        <button class="endpoint-copy" data-copy="https://next.hal9.ai/mcp/mcpbuild/send-email">Copy</button>
+      </div>
+      <p>
+        See <a href="../#mcps">all available MCPs</a> for the full list.
+      </p>
+    </section>
+
+    <section id="troubleshooting">
+      <h2>Troubleshooting</h2>
+      <ul class="why-list">
+        <li>
+          <div class="why-top"><h3>Connector doesn't appear</h3></div>
+          <p>Refresh <code>claude.ai/customize/connectors</code> — new connectors can take a few seconds to register.</p>
+        </li>
+        <li>
+          <div class="why-top"><h3>Tool isn't called</h3></div>
+          <p>Make sure the connector is enabled for the conversation (check the tools/connectors picker), and phrase the request the way the MCP's example prompt does.</p>
+        </li>
+        <li>
+          <div class="why-top"><h3>Auth errors</h3></div>
+          <p>Some MCPs need an API key or header — check that MCP's own docs page for any required setup.</p>
+        </li>
+      </ul>
+    </section>
+
+    <footer class="footer">
+      <span>mcp.build · open source MCPs for AI agents</span>
+      <span>
+        <a href="../">All MCPs</a>
+        ·
+        <a href="https://github.com/hal9ai/mcp.build">GitHub</a>
+        ·
+        <a href="../llms.txt">llms.txt</a>
+      </span>
+    </footer>
+  </div>
+
+  <script src="../js/copy.js"></script>
+</body>
+</html>

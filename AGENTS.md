@@ -53,16 +53,19 @@ is no framework or build step — every "route" is a plain folder with an `index
 
 | File | Purpose |
 | --- | --- |
-| `docs/index.html` | Landing page — explains what mcp.build is and lists available MCPs, each linking to its own page. No agent-contribution instructions here anymore; that content lives in root `README.md` / this file. |
-| `docs/<mcp-id>/index.html` | Dedicated page per MCP, e.g. `docs/send-email/index.html` → served at `/send-email/`. Covers: description, how agents use it, how to add it to Claude (and other MCP clients), self-host instructions. Copy `docs/send-email/index.html` as the template for a new MCP. |
-| `docs/css/styles.css` | Shared styles (reuse existing classes: `card`, `steps`, `callout`, `meta`, `pre-wrap`, `btn`) |
-| `docs/agents.json` | Machine-readable catalog (landing page JS loads this to render/override the MCP list). Each entry should include `id`, `name`, `description`, and `docs_path` (e.g. `"send-email/"`). |
+| `docs/index.html` | Landing page — explains what mcp.build is and lists available MCPs, each with its endpoint URL, an "Add to Claude" button, and a link to its own page. No agent-contribution instructions here anymore; that content lives in root `README.md` / this file. |
+| `docs/<mcp-id>/index.html` | Dedicated page per MCP, e.g. `docs/send-email/index.html` → served at `/send-email/`. Covers: the endpoint URL + "Add to Claude" button at the top, description, how agents use it, self-host instructions. Does **not** repeat generic connector setup steps — link to `docs/installing-mcps/` instead. Copy `docs/send-email/index.html` as the template for a new MCP. |
+| `docs/installing-mcps/index.html` | Single reference page for "how to connect any MCP" (Add to Claude, Claude Code, other MCP clients, troubleshooting). Every MCP page links here instead of repeating the instructions. |
+| `docs/css/styles.css` | Shared styles (reuse existing classes: `card`, `steps`, `callout`, `meta`, `pre-wrap`, `btn`, `btn-sm`, `endpoint`, `endpoint-copy`) |
+| `docs/js/copy.js` | Shared "copy to clipboard" behavior for `[data-copy]` buttons (used by the `endpoint-copy` button) |
+| `docs/agents.json` | Machine-readable catalog (landing page JS loads this to render/override the MCP list). Each entry should include `id`, `name`, `description`, `docs_path` (e.g. `"send-email/"`), and `endpoint` (the hosted MCP URL). |
 | `docs/llms.txt` | Short instructions for LLMs / agents |
 | `docs/.nojekyll` | Disable Jekyll on Pages |
 
 Keep the site minimal: no build step, no framework. When adding a new MCP page,
 mirror the section structure of `docs/send-email/index.html` so pages stay consistent
-and easy to generate.
+and easy to generate. Nav on every page should link to `#mcps` (or `../#mcps`) and
+to `docs/installing-mcps/`.
 
 ## PR hygiene
 

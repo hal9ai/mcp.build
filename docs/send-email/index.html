@@ -19,8 +19,8 @@
     <nav class="nav">
       <a class="logo" href="../">mcp<span>.</span>build</a>
       <ul class="nav-links">
-        <li><a href="../#mcps">All MCPs</a></li>
-        <li><a href="https://github.com/hal9ai/mcp.build/tree/main/send-email">Source</a></li>
+        <li><a href="../#mcps">MCPs</a></li>
+        <li><a href="../installing-mcps/">Installing MCPs</a></li>
         <li><a href="https://github.com/hal9ai/mcp.build">GitHub</a></li>
       </ul>
     </nav>
@@ -29,23 +29,25 @@
       <div class="badge">MCP · send-email</div>
       <h1>send-email</h1>
       <p class="lead">Send emails from natural language prompts.</p>
+
+      <div class="endpoint">
+        <div>
+          <span class="endpoint-label">MCP endpoint</span>
+          <code>https://next.hal9.ai/mcp/mcpbuild/send-email</code>
+        </div>
+        <button class="endpoint-copy" data-copy="https://next.hal9.ai/mcp/mcpbuild/send-email">Copy</button>
+      </div>
+
       <div class="actions">
-        <a class="btn btn-primary" href="https://claude.ai/customize/connectors">Add to Claude</a>
+        <a class="btn btn-primary" href="https://claude.ai/customize/connectors?modal=add-custom-connector&connectorName=Send%20Email&connectorUrl=https%3A%2F%2Fnext.hal9.ai%2Fmcp%2Fmcpbuild%2Fsend-email">Add to Claude</a>
         <a class="btn btn-ghost" href="https://github.com/hal9ai/mcp.build/tree/main/send-email">View source</a>
       </div>
       <p style="margin-top: 0.85rem; font-size: 0.8rem; color: var(--text-dim);">
-        "Add to Claude" opens Claude's connector settings
-        (<code>claude.ai/customize/connectors</code>) — from there, add this MCP as a
-        custom connector using the URL below. See <a href="#add-to-claude">setup steps</a>.
+        First time connecting an MCP? See
+        <a href="../installing-mcps/">Installing MCPs</a>
+        for setup steps in Claude, Claude Code, and other clients.
       </p>
     </header>
-
-    <div class="callout">
-      <p>
-        <strong>Hosted MCP endpoint:</strong>
-        <code>https://mcp.build/send-email</code>
-      </p>
-    </div>
 
     <section id="what">
       <h2>What it does</h2>
@@ -95,47 +97,7 @@
       </p>
     </section>
 
-    <section id="add-to-claude">
-      <h2>Add it to Claude</h2>
-      <p>
-        Claude (claude.ai, Claude Desktop, and Claude Code) can connect to this MCP as
-        a <strong>remote MCP custom connector</strong>. Anthropic doesn't yet support a
-        one-click pre-filled link for custom connectors, so add it in a few clicks:
-      </p>
-      <ol class="steps">
-        <li><div><strong>Open Connectors</strong><span>In Claude, go to <code>Settings → Connectors</code> (or visit <a href="https://claude.ai/customize/connectors">claude.ai/customize/connectors</a> directly)</span></div></li>
-        <li><div><strong>Add custom connector</strong><span>Click the <code>+</code> button, then <strong>Add custom connector</strong></span></div></li>
-        <li><div><strong>Paste the MCP URL</strong><span>Enter <code>https://mcp.build/send-email</code> — this MCP's hosted endpoint (see <a href="https://github.com/hal9ai/mcp.build/tree/main/send-email">the repo</a> for how it's deployed) — and any required auth header</span></div></li>
-        <li><div><strong>Start prompting</strong><span>Ask Claude to send an email — it will call <code>send_email</code> on this MCP automatically</span></div></li>
-      </ol>
-      <div class="callout">
-        <p>
-          <strong>Claude Code / CLI:</strong> if you use Claude Code, you can add any
-          remote MCP server the same way you'd add a directory connector:
-          <code>claude mcp add send-email https://mcp.build/send-email</code>.
-        </p>
-      </div>
-    </section>
-
-    <section id="other-platforms">
-      <h2>Other AI platforms</h2>
-      <p>
-        Any MCP-compatible client can use send-email the same way — point it at the
-        hosted MCP endpoint (<code>https://mcp.build/send-email</code>) as a remote server:
-      </p>
-      <table class="meta">
-        <thead>
-          <tr><th>Platform</th><th>How</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>Claude / Claude Desktop</td><td>Settings → Connectors → Add custom connector → paste <code>https://mcp.build/send-email</code></td></tr>
-          <tr><td>Claude Code</td><td><code>claude mcp add send-email https://mcp.build/send-email</code></td></tr>
-          <tr><td>Cursor / other MCP clients</td><td>Add as a remote MCP server in the client's MCP settings, using the same URL</td></tr>
-        </tbody>
-      </table>
-    </section>
-
-    <section id="self-host">
+    <section id="config">
       <h2>Self-host or run locally</h2>
       <p>
         send-email is open source and built on the <a href="https://github.com/hal9ai/hal9">Hal9</a>
@@ -165,10 +127,20 @@ echo "send email to you@example.com with text hello!" | python app.py</pre>
       </p>
     </section>
 
+    <div class="callout">
+      <p>
+        <strong>Connecting from Claude, Claude Code, Cursor, or another MCP client?</strong>
+        Point it at the endpoint above — full step-by-step instructions live on the
+        <a href="../installing-mcps/">Installing MCPs</a> page.
+      </p>
+    </div>
+
     <footer class="footer">
       <span>mcp.build · open source MCPs for AI agents</span>
       <span>
         <a href="../">All MCPs</a>
+        ·
+        <a href="../installing-mcps/">Installing MCPs</a>
         ·
         <a href="https://github.com/hal9ai/mcp.build">GitHub</a>
         ·
@@ -176,5 +148,7 @@ echo "send email to you@example.com with text hello!" | python app.py</pre>
       </span>
     </footer>
   </div>
+
+  <script src="../js/copy.js"></script>
 </body>
 </html>

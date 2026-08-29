@@ -20,7 +20,7 @@
       <a class="logo" href="./">mcp<span>.</span>build</a>
       <ul class="nav-links">
         <li><a href="#mcps">MCPs</a></li>
-        <li><a href="https://github.com/hal9ai/mcp.build#contributing">Contribute</a></li>
+        <li><a href="installing-mcps/">Installing MCPs</a></li>
         <li><a href="https://github.com/hal9ai/mcp.build">GitHub</a></li>
       </ul>
     </nav>
@@ -33,11 +33,11 @@
         <a href="https://modelcontextprotocol.io">MCPs</a>
         (Model Context Protocol servers) — hosted, ready-to-use tools that make it
         super easy for AI agents like Claude to interact with real-world services.
-        Pick an MCP below, connect it in a couple of clicks, and start using it from
+        Copy an endpoint, connect it in a couple of clicks, and start using it from
         a plain natural-language prompt.
       </p>
       <div class="actions">
-        <a class="btn btn-primary" href="#mcps">Browse MCPs</a>
+        <a class="btn btn-primary" href="send-email/">Explore send-email</a>
         <a class="btn btn-ghost" href="https://github.com/hal9ai/mcp.build">View on GitHub</a>
       </div>
     </header>
@@ -46,15 +46,27 @@
       <h2>Available MCPs</h2>
       <div class="cards" id="agent-list">
         <!-- populated from agents.json; static fallback below -->
-        <a class="card" href="send-email/">
+        <div class="card">
           <div class="card-top">
-            <h3>send-email</h3>
-            <span class="tag">/send-email</span>
+            <h3><a href="send-email/">send-email</a></h3>
+            <span class="tag">MCP</span>
           </div>
           <p>Send emails from natural language prompts.</p>
-        </a>
+          <div class="endpoint endpoint-sm">
+            <div>
+              <span class="endpoint-label">MCP endpoint</span>
+              <code>https://next.hal9.ai/mcp/mcpbuild/send-email</code>
+            </div>
+            <button class="endpoint-copy" data-copy="https://next.hal9.ai/mcp/mcpbuild/send-email">Copy</button>
+          </div>
+          <div class="card-actions">
+            <a class="btn btn-primary btn-sm" href="https://claude.ai/customize/connectors?modal=add-custom-connector&connectorName=Send%20Email&connectorUrl=https%3A%2F%2Fnext.hal9.ai%2Fmcp%2Fmcpbuild%2Fsend-email">Add to Claude</a>
+            <a class="btn btn-ghost btn-sm" href="send-email/">View docs</a>
+          </div>
+        </div>
       </div>
-      <p style="margin-top: 1rem; font-size: 0.85rem;">
+      <p style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-dim);">
+        New to MCPs? <a href="installing-mcps/">Learn how to install MCPs</a>.
         Machine-readable catalog: <a href="agents.json"><code>agents.json</code></a>
         · Agent instructions: <a href="llms.txt"><code>llms.txt</code></a>
         · Want to add one? See <a href="https://github.com/hal9ai/mcp.build#contributing">contributing on GitHub</a>
@@ -82,6 +94,8 @@
     <footer class="footer">
       <span>mcp.build · open source MCPs for AI agents</span>
       <span>
+        <a href="installing-mcps/">Installing MCPs</a>
+        ·
         <a href="https://github.com/hal9ai/mcp.build">GitHub</a>
         ·
         <a href="https://github.com/hal9ai/hal9">Hal9</a>
@@ -91,6 +105,7 @@
     </footer>
   </div>
 
+  <script src="js/copy.js"></script>
   <script>
     // Load catalog so the site stays in sync with agents.json
     fetch("agents.json")
@@ -99,16 +114,39 @@
         const list = document.getElementById("agent-list");
         if (!data.agents || !data.agents.length) return;
         list.innerHTML = data.agents
-          .map(
-            (a) => `
-          <a class="card" href="${a.docs_path || "./" + a.id + "/"}">
+          .map((a) => {
+            const docsPath = a.docs_path || "./" + a.id + "/";
+            const endpoint = a.endpoint || "";
+            const connectorName = a.connector_name || a.name || a.id;
+            const connectorUrl = endpoint
+              ? `https://claude.ai/customize/connectors?modal=add-custom-connector&connectorName=${encodeURIComponent(
+                  connectorName
+                )}&connectorUrl=${encodeURIComponent(endpoint)}`
+              : "https://claude.ai/customize/connectors";
+            return `
+          <div class="card">
             <div class="card-top">
-              <h3>${a.name}</h3>
-              <span class="tag">/${a.id}</span>
+              <h3><a href="${docsPath}">${a.name}</a></h3>
+              <span class="tag">MCP</span>
             </div>
             <p>${a.description}</p>
-          </a>`
-          )
+            ${
+              endpoint
+                ? `<div class="endpoint endpoint-sm">
+              <div>
+                <span class="endpoint-label">MCP endpoint</span>
+                <code>${endpoint}</code>
+              </div>
+              <button class="endpoint-copy" data-copy="${endpoint}">Copy</button>
+            </div>`
+                : ""
+            }
+            <div class="card-actions">
+              <a class="btn btn-primary btn-sm" href="${connectorUrl}">Add to Claude</a>
+              <a class="btn btn-ghost btn-sm" href="${docsPath}">View docs</a>
+            </div>
+          </div>`;
+          })
           .join("");
       })
       .catch(() => {});

@@ -18,6 +18,9 @@ it does not contain contribution instructions (those live in `README.md` / `AGEN
 Each MCP has its own page at `docs/<id>/index.html`, served at `/<id>/`
 (e.g. `docs/send-email/index.html` → https://hal9ai.github.io/mcp.build/send-email/).
 Use `docs/send-email/index.html` as the template when adding a new one.
+General "how to connect an MCP" instructions (Add to Claude, Claude Code, other
+clients) live once at `docs/installing-mcps/index.html` — MCP pages link there
+instead of repeating the steps.
 
 ## Agent contract
 
