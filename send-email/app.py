@@ -10,7 +10,7 @@ import os
 import resend
 from groq import Groq
 
-MODEL = os.environ.get("GROQ_MODEL", "llama-3.3-70b-versatile")
+MODEL = os.environ.get("GROQ_MODEL", "qwen/qwen3.6-27b")
 RESEND_FROM = os.environ.get("RESEND_FROM", "mcp.build <onboarding@resend.dev>")
 
 TOOLS = [
