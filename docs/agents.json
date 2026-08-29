@@ -12,6 +12,7 @@
     {
       "id": "send-email",
       "name": "send-email",
+      "connector_name": "Send Email",
       "description": "Send emails from natural language prompts.",
       "docs_path": "send-email/",
       "path": "send-email",
@@ -19,6 +20,7 @@
       "entry": "send-email/app.py",
       "runtime": "python",
       "io": "stdin/stdout",
+      "endpoint": "https://next.hal9.ai/mcp/mcpbuild/send-email",
       "dependencies": ["groq", "resend"],
       "env": [
         { "name": "GROQ_API_KEY", "required": true },
