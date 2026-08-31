@@ -42,10 +42,10 @@
       <h2>Available MCPs</h2>
       <div class="cards" id="agent-list">
         <!-- populated from agents.json; static fallback below -->
-        <div class="card">
+        <div class="card card-clickable">
+          <a class="card-cover" href="send-email/" aria-label="View send-email"></a>
           <div class="card-top">
-            <h3><a href="send-email/">send-email</a></h3>
-            <span class="tag">MCP</span>
+            <h3>send-email</h3>
           </div>
           <p>Send emails from natural language prompts.</p>
           <div class="endpoint endpoint-sm">
@@ -57,7 +57,6 @@
           </div>
           <div class="card-actions">
             <a class="btn btn-primary btn-sm" href="https://claude.ai/customize/connectors?modal=add-custom-connector&connectorName=Send%20Email&connectorUrl=https%3A%2F%2Fnext.hal9.ai%2Fmcp%2Fmcpbuild%2Fsend-email">Add to Claude</a>
-            <a class="btn btn-ghost btn-sm" href="send-email/">View docs</a>
           </div>
         </div>
       </div>
@@ -120,10 +119,10 @@
                 )}&connectorUrl=${encodeURIComponent(endpoint)}`
               : "https://claude.ai/customize/connectors";
             return `
-          <div class="card">
+          <div class="card card-clickable">
+            <a class="card-cover" href="${docsPath}" aria-label="View ${a.name}"></a>
             <div class="card-top">
-              <h3><a href="${docsPath}">${a.name}</a></h3>
-              <span class="tag">MCP</span>
+              <h3>${a.name}</h3>
             </div>
             <p>${a.description}</p>
             ${
@@ -139,7 +138,6 @@
             }
             <div class="card-actions">
               <a class="btn btn-primary btn-sm" href="${connectorUrl}">Add to Claude</a>
-              <a class="btn btn-ghost btn-sm" href="${docsPath}">View docs</a>
             </div>
           </div>`;
           })

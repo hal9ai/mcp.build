@@ -407,6 +407,28 @@ section p {
   margin-top: 0.9rem;
 }
 
+/* clickable card — the whole card links out via an invisible cover,
+   while nested interactive elements (buttons, links) stay on top and clickable */
+.card-clickable {
+  position: relative;
+  cursor: pointer;
+}
+
+.card-clickable .card-cover {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+}
+
+.card-clickable .card-top,
+.card-clickable > p,
+.card-clickable .endpoint,
+.card-clickable .card-actions {
+  position: relative;
+  z-index: 1;
+}
+
 /* why mcp.build — plain list, deliberately not link-like or clickable */
 .why-list {
   list-style: none;
