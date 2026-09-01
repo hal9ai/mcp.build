@@ -67,7 +67,7 @@ On push to `main`, if files under `send-email/` change, [`.github/workflows/send
 
 **Publish to the MCP Registry**
 
-The hosted send-email MCP is published as a remote-only server to the [official MCP Registry](https://registry.modelcontextprotocol.io) under `io.github.hal9ai/send-email`. Metadata lives in [`send-email/server.json`](./send-email/server.json). On push to `main` (when `send-email/` changes), [`.github/workflows/publish-send-email.yaml`](./.github/workflows/publish-send-email.yaml) publishes it using GitHub OIDC — **no extra GitHub secrets**. The registry version is taken from [`send-email/hal9.yaml`](./send-email/hal9.yaml). If that version is already published, the job skips. Bump `version` there to ship a new registry entry.
+The hosted send-email MCP is published as a remote-only server to the [official MCP Registry](https://registry.modelcontextprotocol.io) under `io.github.hal9ai/send-email`. Metadata lives in [`send-email/server.json`](./send-email/server.json). On push to `main` (when `send-email/` changes), [`.github/workflows/publish-send-email.yaml`](./.github/workflows/publish-send-email.yaml) publishes it using GitHub OIDC — **no extra GitHub secrets**. The registry version is `version` in that file. If it is already published, the job skips. Bump `version` there to ship a new registry entry.
 
 ## Website (GitHub Pages)
 
