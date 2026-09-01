@@ -429,20 +429,6 @@ section p {
   z-index: 1;
 }
 
-/* get started — short CTA flow into the catalog */
-.get-started-flow {
-  font-size: 1rem;
-  color: var(--text-muted);
-  max-width: 40rem;
-  margin-bottom: 1.25rem;
-}
-
-.get-started-flow .arrow {
-  color: var(--accent);
-  font-weight: 600;
-  margin: 0 0.15rem;
-}
-
 /* Available MCPs — the central, most prominent section on the page */
 .mcps-featured {
   background: var(--bg-elevated);
@@ -454,10 +440,6 @@ section p {
 
 .mcps-featured-head {
   margin-bottom: 1.5rem;
-}
-
-.badge-mcps {
-  margin-bottom: 0.85rem;
 }
 
 .mcps-featured h2 {
