@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>mcp.build — ready-to-use MCPs for AI agents</title>
-  <meta name="description" content="mcp.build is a platform of ready-to-use MCPs (Model Context Protocol servers) that make it super easy for AI agents to interact with real-world tools like email." />
+  <title>mcp.build — connect AI agents to the real world, instantly</title>
+  <meta name="description" content="mcp.build hosts open-source MCP servers so your agent can take real action — send emails, call APIs, and more — with nothing to deploy and nothing to configure." />
   <meta name="theme-color" content="#fafafa" media="(prefers-color-scheme: light)" />
   <meta name="theme-color" content="#0a0a0b" media="(prefers-color-scheme: dark)" />
   <meta name="color-scheme" content="light dark" />
@@ -27,19 +27,47 @@
 
     <header class="hero">
       <div class="badge">open source · MCP catalog</div>
-      <h1>Ready-to-use MCPs for AI agents</h1>
+      <h1>Connect AI agents to the real world — instantly.</h1>
       <p class="lead">
-        mcp.build is a platform of open source
-        <a href="https://modelcontextprotocol.io">MCPs</a>
-        (Model Context Protocol servers) — hosted, ready-to-use tools that make it
-        super easy for AI agents like Claude to interact with real-world services.
-        Copy an endpoint, connect it in a couple of clicks, and start using it from
-        a plain natural-language prompt.
+        mcp.build hosts open-source <a href="https://modelcontextprotocol.io">MCP servers</a>
+        so your agent can take real action — send emails, call APIs, and more —
+        with nothing to deploy and nothing to configure. Copy an endpoint,
+        connect it in seconds, and give your agent new superpowers.
       </p>
     </header>
 
-    <section id="mcps">
-      <h2>Available MCPs</h2>
+    <section id="why">
+      <h2>Why mcp.build</h2>
+      <ul class="why-list">
+        <li>
+          <div class="why-top"><h3>Hosted and ready</h3><span class="tag">hosted</span></div>
+          <p>Every MCP is already running. No servers, no infra — just a URL you paste and go.</p>
+        </li>
+        <li>
+          <div class="why-top"><h3>Built for plain language</h3><span class="tag">agent-friendly</span></div>
+          <p>MCPs on mcp.build are designed to take natural-language prompts and turn them into the right tool calls. No rigid schemas, no boilerplate.</p>
+        </li>
+        <li>
+          <div class="why-top"><h3>Open source</h3><span class="tag">community</span></div>
+          <p>Every MCP is open source. Inspect the code, self-host it, or contribute your own.</p>
+        </li>
+      </ul>
+    </section>
+
+    <section id="get-started">
+      <h2>Get started</h2>
+      <p class="get-started-flow">
+        Browse the catalog <span class="arrow">→</span> copy an MCP endpoint <span class="arrow">→</span> connect it in Claude or your agent of choice <span class="arrow">→</span> done.
+      </p>
+      <a class="btn btn-primary" href="#mcps">→ Browse MCPs</a>
+    </section>
+
+    <section id="mcps" class="mcps-featured">
+      <div class="mcps-featured-head">
+        <span class="badge badge-mcps">core catalog</span>
+        <h2>Available MCPs</h2>
+        <p class="mcps-featured-sub">Hosted, ready-to-connect MCP servers. Pick one, copy its endpoint, and your agent is ready to go.</p>
+      </div>
       <div class="cards" id="agent-list">
         <!-- populated from agents.json; static fallback below -->
         <div class="card card-clickable">
@@ -66,24 +94,6 @@
         · Agent instructions: <a href="llms.txt"><code>llms.txt</code></a>
         · Want to add one? See <a href="https://github.com/hal9ai/mcp.build#contributing">contributing on GitHub</a>
       </p>
-    </section>
-
-    <section id="why">
-      <h2>Why mcp.build</h2>
-      <ul class="why-list">
-        <li>
-          <div class="why-top"><h3>Ready to use</h3><span class="tag">hosted</span></div>
-          <p>Every MCP is already deployed. No servers to run, no infrastructure to manage — just connect and go.</p>
-        </li>
-        <li>
-          <div class="why-top"><h3>Natural language in</h3><span class="tag">agent-friendly</span></div>
-          <p>MCPs on this site are built to take plain prompts and turn them into the right tool calls, so agents don't need rigid schemas to get useful work done.</p>
-        </li>
-        <li>
-          <div class="why-top"><h3>Open source</h3><span class="tag">community</span></div>
-          <p>Every MCP is open source and built on the <a href="https://github.com/hal9ai/hal9">Hal9</a> agent structure. Anyone can inspect, self-host, or contribute a new one.</p>
-        </li>
-      </ul>
     </section>
 
     <footer class="footer">
