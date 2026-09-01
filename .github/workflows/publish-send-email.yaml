@@ -1,0 +1,69 @@
+name: Publish send-email to MCP Registry
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - send-email/**
+      - .github/workflows/publish-send-email.yaml
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Install mcp-publisher
+        run: |
+          curl -fsSL "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_$(uname -s | tr '[:upper:]' '[:lower:]')_$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/').tar.gz" | tar xz mcp-publisher
+          chmod +x mcp-publisher
+
+      - name: Set version from send-email/hal9.yaml
+        run: |
+          VERSION="$(awk '/^version:/{print $2; exit}' send-email/hal9.yaml | tr -d '[:space:]')"
+          if [[ -z "${VERSION}" ]]; then
+            echo "Could not read version from send-email/hal9.yaml" >&2
+            exit 1
+          fi
+          echo "Using version ${VERSION} from send-email/hal9.yaml"
+          jq --arg v "${VERSION}" '.version = $v' send-email/server.json > send-email/server.tmp
+          mv send-email/server.tmp send-email/server.json
+          echo "VERSION=${VERSION}" >> "${GITHUB_ENV}"
+
+      - name: Validate server.json
+        run: ./mcp-publisher validate send-email/server.json
+
+      - name: Skip if this version is already published
+        id: existing
+        run: |
+          NAME="$(jq -r '.name' send-email/server.json)"
+          ENCODED_NAME="$(jq -nr --arg n "${NAME}" '$n|@uri')"
+          curl -fsS "https://registry.modelcontextprotocol.io/v0.1/servers?search=${ENCODED_NAME}" -o /tmp/registry.json
+          if jq -e --arg n "${NAME}" --arg v "${VERSION}" '
+              .servers[]? | select(.server.name == $n and .server.version == $v)
+            ' /tmp/registry.json >/dev/null; then
+            echo "already=true" >> "${GITHUB_OUTPUT}"
+            echo "io.github.hal9ai/send-email ${VERSION} is already in the registry — skipping publish"
+          else
+            echo "already=false" >> "${GITHUB_OUTPUT}"
+          fi
+
+      - name: Authenticate to MCP Registry
+        if: steps.existing.outputs.already != 'true'
+        run: ./mcp-publisher login github-oidc
+
+      - name: Publish send-email to MCP Registry
+        if: steps.existing.outputs.already != 'true'
+        run: ./mcp-publisher publish send-email/server.json
+
+      - name: Verify publication
+        if: steps.existing.outputs.already != 'true'
+        run: |
+          echo "Looking up io.github.hal9ai/send-email ${VERSION} in the registry..."
+          curl -fsS "https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.hal9ai/send-email"

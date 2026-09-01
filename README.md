@@ -65,6 +65,10 @@ hal9 deploy send-email --name send-email --access public \
 
 On push to `main`, if files under `send-email/` change, [`.github/workflows/send-email.yaml`](./.github/workflows/send-email.yaml) deploys a new version to Hal9 (same pattern as [hal9ai/hal9](https://github.com/hal9ai/hal9) app deploy workflows). Set the `HAL9_TOKEN` repository secret in GitHub Actions.
 
+**Publish to the MCP Registry**
+
+The hosted send-email MCP is published as a remote-only server to the [official MCP Registry](https://registry.modelcontextprotocol.io) under `io.github.hal9ai/send-email`. Metadata lives in [`send-email/server.json`](./send-email/server.json). On push to `main` (when `send-email/` changes), [`.github/workflows/publish-send-email.yaml`](./.github/workflows/publish-send-email.yaml) publishes it using GitHub OIDC — **no extra GitHub secrets**. The registry version is taken from [`send-email/hal9.yaml`](./send-email/hal9.yaml). If that version is already published, the job skips. Bump `version` there to ship a new registry entry.
+
 ## Website (GitHub Pages)
 
 Static site lives in [`docs/`](./docs) — no build step.
