@@ -61,8 +61,7 @@
       </div>
       <div class="cards" id="agent-list">
         <!-- populated from agents.json; static fallback below -->
-        <div class="card card-clickable">
-          <a class="card-cover" href="send-email/" aria-label="View send-email"></a>
+        <div class="card card-clickable" data-href="send-email/">
           <div class="card-top">
             <h3><a href="send-email/">send-email</a></h3>
           </div>
@@ -102,6 +101,7 @@
   </div>
 
   <script src="js/copy.js"></script>
+  <script src="js/cards.js"></script>
   <script>
     // Load catalog so the site stays in sync with agents.json
     fetch("agents.json")
@@ -120,8 +120,7 @@
                 )}&connectorUrl=${encodeURIComponent(endpoint)}`
               : "https://claude.ai/customize/connectors";
             return `
-          <div class="card card-clickable">
-            <a class="card-cover" href="${docsPath}" aria-label="View ${a.name}"></a>
+          <div class="card card-clickable" data-href="${docsPath}">
             <div class="card-top">
               <h3><a href="${docsPath}">${a.name}</a></h3>
             </div>

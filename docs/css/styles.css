@@ -407,26 +407,11 @@ section p {
   margin-top: 0.9rem;
 }
 
-/* clickable card — the whole card links out via an invisible cover,
-   while nested interactive elements (buttons, links) stay on top and clickable */
+/* clickable card — clicking anywhere on the card navigates to its page via
+   JS (see js/cards.js), except the copy button and "Add to Claude" link,
+   which keep their own behavior. */
 .card-clickable {
-  position: relative;
   cursor: pointer;
-}
-
-.card-clickable .card-cover {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  border-radius: inherit;
-}
-
-.card-clickable .card-top,
-.card-clickable > p,
-.card-clickable .endpoint,
-.card-clickable .card-actions {
-  position: relative;
-  z-index: 1;
 }
 
 /* Available MCPs — the central, most prominent section on the page */
