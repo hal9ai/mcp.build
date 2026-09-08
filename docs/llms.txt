@@ -1,14 +1,12 @@
 # mcp.build
 
-> Hosted, open-source MCP (Model Context Protocol) servers for AI agents.
-> Connect an endpoint once — your agent can take real action instantly, with nothing to deploy.
+> Hosted, open-source MCP servers for AI agents.
 
 Homepage: https://mcp.build
 Repository: https://github.com/hal9ai/mcp.build
-Full agent rules: https://github.com/hal9ai/mcp.build/blob/main/AGENTS.md
-Machine-readable catalog: https://mcp.build/agents.json
+Catalog: https://mcp.build/agents.json
 
-## What mcp.build is
+## Agents
 
 mcp.build is a catalog of already-deployed MCP servers. Every server in the catalog:
 - Is live and reachable via a single HTTPS endpoint
@@ -50,9 +48,16 @@ Deploy when the folder changes via `.github/workflows/<name>.yaml`.
   - Example: `install a package that calculates space orbits and compute the Hohmann transfer time from Earth to Mars and back, departing 2026-09-08`
   - Built with: Groq (tool use) + sandboxed Python + pip install
 
+- **search-web** — https://mcp.build/search-web/
+  - Endpoint: https://next.hal9.ai/mcp/mcpbuild/search-web
+  
+- **fetch-url** — https://mcp.build/fetch-url/
+  - Endpoint: https://next.hal9.ai/mcp/mcpbuild/fetch-url
+
 ## Do not
 
 - Add heavy app frameworks (Flask/FastAPI) for simple tool agents
 - Put multiple unrelated tools in one folder
 - Change unrelated agents in the same PR unless required
 - Commit `.env`, keys, or `__pycache__`
+
