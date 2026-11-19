@@ -64,7 +64,6 @@ AGENT_ENV = {
         "MAX_ROUNDS",
         "PACKAGES_DIR",
     ),
-    "search-web": ("EXA_API_KEY", "SEARCH_NUM_RESULTS"),
     "fetch-url": ("FETCH_MAX_CHARS", "FETCH_TIMEOUT"),
 }
 

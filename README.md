@@ -20,7 +20,6 @@ Hal9 agents are intentionally simple: read the prompt from stdin, write the resu
 | --- | --- | --- | --- |
 | **send-email** | Send emails with [Resend](https://resend.com) from natural language prompts (Groq tool use) | `https://mcp.build/mcp/send-email` | [`send-email/`](./send-email) |
 | **run-python** | Run Python and install PyPI packages from natural language prompts (Groq tool use) | `https://mcp.build/mcp/run-python` | [`run-python/`](./run-python) |
-| **search-web** | Search the web via [Exa](https://exa.ai) from natural language prompts | `https://mcp.build/mcp/search-web` | [`search-web/`](./search-web) |
 | **fetch-url** | Fetch and extract the plain text of any URL (no API key) | `https://mcp.build/mcp/fetch-url` | [`fetch-url/`](./fetch-url) |
 
 Every endpoint is MCP **Streamable HTTP** (protocol `2025-06-18`) and exposes one tool named `chat` with `message` (required) and `chat_id` (optional).
@@ -130,7 +129,7 @@ Then open <http://127.0.0.1:8080/> or point an MCP client at
 
 ### Deploy
 
-On push to `main` touching `mcp_server/`, `docs/`, `send-email/`, `run-python/`, the `Dockerfile`, or `requirements.txt`, [`.github/workflows/deploy-cloudish.yaml`](./.github/workflows/deploy-cloudish.yaml):
+On push to `main` touching any agent folder, `mcp_server/`, `docs/`, the `Dockerfile`, or `requirements.txt`, [`.github/workflows/deploy-cloudish.yaml`](./.github/workflows/deploy-cloudish.yaml):
 
 1. Packages the committed tree with `git archive` (no `.git`, no local `.env`).
 2. `POST https://cloudish.ai/api/v1/projects` with `name=mcp-build`, `port=8080`, `alwaysOn=true`, `runtimeClass=gvisor`, and the build context.
@@ -147,7 +146,6 @@ The app is `alwaysOn` so MCP clients do not hit cold starts (roughly **$7.84/mon
 | `CLOUDISH_API_KEY` | secret | Cloudish API key (create/claim one at [cloudish.ai](https://cloudish.ai)) |
 | `GROQ_API_KEY` | secret | Passed to the agents as a Cloudish project secret |
 | `RESEND_API_KEY` | secret | Passed to send-email as a Cloudish project secret |
-| `EXA_API_KEY` | secret | Passed to search-web as a Cloudish project secret |
 | `RESEND_FROM` | variable | Optional sender, e.g. `mcp.build <send@mcp.build>`; must be on a Resend-verified domain |
 | `GROQ_MODEL` | variable | Optional model override |
 | `CLOUDISH_OWNER` | variable | Optional fallback for the Cloudish alias if it cannot be read from the deploy response |

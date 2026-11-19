@@ -70,34 +70,6 @@
       "example_prompt": "install a package that calculates space orbits and compute the Hohmann transfer time from Earth to Mars and back, departing 2026-09-08"
     },
     {
-      "id": "search-web",
-      "name": "search-web",
-      "connector_name": "Search Web",
-      "description": "Search the web from natural language prompts. Returns titles, URLs, and summaries for the top results.",
-      "docs_path": "search-web/",
-      "path": "search-web",
-      "repo_path": "https://github.com/hal9ai/mcp.build/tree/main/search-web",
-      "entry": "search-web/app.py",
-      "runtime": "python",
-      "io": "stdin/stdout",
-      "endpoint": "https://mcp.build/mcp/search-web",
-      "dependencies": [
-        "requests"
-      ],
-      "env": [
-        {
-          "name": "EXA_API_KEY",
-          "required": true
-        },
-        {
-          "name": "SEARCH_NUM_RESULTS",
-          "required": false
-        }
-      ],
-      "workflow": ".github/workflows/deploy-cloudish.yaml",
-      "example_prompt": "search for recent news about Model Context Protocol"
-    },
-    {
       "id": "fetch-url",
       "name": "fetch-url",
       "connector_name": "Fetch URL",

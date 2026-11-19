@@ -28,7 +28,6 @@ jobs:
       CLOUDISH_DOMAIN: ${{ vars.CLOUDISH_DOMAIN }}
       GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
       RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
-      EXA_API_KEY: ${{ secrets.EXA_API_KEY }}
       RESEND_FROM: ${{ vars.RESEND_FROM }}
       GROQ_MODEL: ${{ vars.GROQ_MODEL }}
 
@@ -144,15 +143,12 @@ jobs:
         run: |
           set -euo pipefail
 
-          if [[ -z "${GROQ_API_KEY}" && -z "${RESEND_API_KEY}" && -z "${EXA_API_KEY}" && -z "${RESEND_FROM}" && -z "${GROQ_MODEL}" ]]; then
+          if [[ -z "${GROQ_API_KEY}" && -z "${RESEND_API_KEY}" && -z "${RESEND_FROM}" && -z "${GROQ_MODEL}" ]]; then
             echo "No runtime config set; skipping"
             exit 0
           fi
           if [[ -z "${GROQ_API_KEY}" ]]; then
             echo "Warning: GROQ_API_KEY is not set; agents will return an error" >&2
-          fi
-          if [[ -z "${EXA_API_KEY}" ]]; then
-            echo "Warning: EXA_API_KEY is not set; search-web will return an error" >&2
           fi
           if [[ -z "${RESEND_FROM}" ]]; then
             echo "Warning: RESEND_FROM is not set; send-email will use its default sender" >&2
@@ -161,10 +157,9 @@ jobs:
           BODY="$(jq -n \
             --arg groq "${GROQ_API_KEY}" \
             --arg resend "${RESEND_API_KEY}" \
-            --arg exa "${EXA_API_KEY}" \
             --arg from "${RESEND_FROM}" \
             --arg model "${GROQ_MODEL}" \
-            '{GROQ_API_KEY: $groq, RESEND_API_KEY: $resend, EXA_API_KEY: $exa,
+            '{GROQ_API_KEY: $groq, RESEND_API_KEY: $resend,
               RESEND_FROM: $from, GROQ_MODEL: $model}
              | with_entries(select(.value != ""))')"
 

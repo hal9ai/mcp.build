@@ -49,11 +49,6 @@ Deploy when the folder changes via `.github/workflows/<name>.yaml`.
   - Example: `install a package that calculates space orbits and compute the Hohmann transfer time from Earth to Mars and back, departing 2026-09-08`
   - Built with: Groq (tool use) + sandboxed Python + pip install
 
-- **search-web** — `https://mcp.build/search-web/`
-  - Endpoint: `https://mcp.build/mcp/search-web`
-  - Example: `search for recent news about Model Context Protocol`
-  - Built with: Exa search API
-
 - **fetch-url** — `https://mcp.build/fetch-url/`
   - Endpoint: `https://mcp.build/mcp/fetch-url`
   - Example: `fetch https://modelcontextprotocol.io`
