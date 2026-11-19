@@ -14,7 +14,7 @@
   "remotes": [
     {
       "type": "streamable-http",
-      "url": "https://next.hal9.ai/mcp/mcpbuild/fetch-url"
+      "url": "https://mcp.build/mcp/fetch-url"
     }
   ]
 }

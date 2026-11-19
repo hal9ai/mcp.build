@@ -3,12 +3,13 @@
 > Hosted, open-source MCP servers for AI agents.
 
 Homepage: https://mcp.build
+Hosting: https://cloudish.ai (mcp.build's hosting provider)
 Repository: https://github.com/hal9ai/mcp.build
 Catalog: https://mcp.build/agents.json
 
 ## Agents
 
-mcp.build is a catalog of already-deployed MCP servers. Every server in the catalog:
+mcp.build is a catalog of already-deployed MCP servers. Every server in the catalog is hosted on [cloudish.ai](https://cloudish.ai) and:
 - Is live and reachable via a single HTTPS endpoint
 - Accepts natural-language prompts and translates them to the right tool calls
 - Is fully open source — inspect the code, self-host it, or contribute your own
@@ -39,20 +40,24 @@ Deploy when the folder changes via `.github/workflows/<name>.yaml`.
 ## Existing agents
 
 - **send-email** — `https://mcp.build/send-email/`
-  - Endpoint: `https://next.hal9.ai/mcp/mcpbuild/send-email`
+  - Endpoint: `https://mcp.build/mcp/send-email`
   - Example: `send email to javier@hal9.ai with text hello!`
   - Built with: Groq (tool use) + Resend (email delivery)
 
 - **run-python** — `https://mcp.build/run-python/`
-  - Endpoint: `https://next.hal9.ai/mcp/mcpbuild/run-python`
+  - Endpoint: `https://mcp.build/mcp/run-python`
   - Example: `install a package that calculates space orbits and compute the Hohmann transfer time from Earth to Mars and back, departing 2026-09-08`
   - Built with: Groq (tool use) + sandboxed Python + pip install
 
-- **search-web** — https://mcp.build/search-web/
-  - Endpoint: https://next.hal9.ai/mcp/mcpbuild/search-web
-  
-- **fetch-url** — https://mcp.build/fetch-url/
-  - Endpoint: https://next.hal9.ai/mcp/mcpbuild/fetch-url
+- **search-web** — `https://mcp.build/search-web/`
+  - Endpoint: `https://mcp.build/mcp/search-web`
+  - Example: `search for recent news about Model Context Protocol`
+  - Built with: Exa search API
+
+- **fetch-url** — `https://mcp.build/fetch-url/`
+  - Endpoint: `https://mcp.build/mcp/fetch-url`
+  - Example: `fetch https://modelcontextprotocol.io`
+  - Built with: requests + BeautifulSoup
 
 ## Do not
 

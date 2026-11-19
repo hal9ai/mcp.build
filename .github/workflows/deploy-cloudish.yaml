@@ -1,0 +1,173 @@
+name: deploy
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      # Any top-level agent folder, plus the gateway and site.
+      - '*/**'
+      - Dockerfile
+      - .dockerignore
+      - requirements.txt
+      - .github/workflows/deploy-cloudish.yaml
+
+concurrency:
+  group: cloudish-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      CLOUDISH_API_URL: https://cloudish.ai/api/v1
+      CLOUDISH_API_KEY: ${{ secrets.CLOUDISH_API_KEY }}
+      CLOUDISH_OWNER: ${{ vars.CLOUDISH_OWNER }}
+      CLOUDISH_APP: mcp-build
+      GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+      RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+      EXA_API_KEY: ${{ secrets.EXA_API_KEY }}
+      RESEND_FROM: ${{ vars.RESEND_FROM }}
+      GROQ_MODEL: ${{ vars.GROQ_MODEL }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Build deploy context
+        run: |
+          git archive --format=tar.gz -o "${RUNNER_TEMP}/context.tar.gz" HEAD
+          ls -lh "${RUNNER_TEMP}/context.tar.gz"
+
+      - name: Deploy to cloudish.ai
+        id: deploy
+        run: |
+          set -euo pipefail
+
+          if [[ -z "${CLOUDISH_API_KEY}" ]]; then
+            echo "Missing CLOUDISH_API_KEY repository secret" >&2
+            exit 1
+          fi
+
+          if ! RESPONSE="$(curl -sS --fail-with-body -X POST "${CLOUDISH_API_URL}/projects" \
+            -H "Authorization: Bearer ${CLOUDISH_API_KEY}" \
+            -F "name=${CLOUDISH_APP}" \
+            -F "port=8080" \
+            -F "alwaysOn=true" \
+            -F "runtimeClass=gvisor" \
+            -F "context=@${RUNNER_TEMP}/context.tar.gz")"; then
+            echo "Cloudish deploy request failed:" >&2
+            echo "${RESPONSE}" >&2
+            exit 1
+          fi
+          echo "${RESPONSE}" | jq .
+
+          BUILD_ID="$(jq -r '.build.id' <<<"${RESPONSE}")"
+          if [[ -z "${BUILD_ID}" || "${BUILD_ID}" == "null" ]]; then
+            echo "Deploy response did not include build.id" >&2
+            exit 1
+          fi
+
+          # project.path is "<owner>/<app>"; take the segment before the app
+          # name so a leading slash or a full URL still works.
+          PROJECT_PATH="$(jq -r '.project.path // ""' <<<"${RESPONSE}")"
+          OWNER="$(awk -F/ '{print $(NF-1)}' <<<"${PROJECT_PATH}")"
+          if [[ -z "${OWNER}" || "${OWNER}" == "${CLOUDISH_APP}" ]]; then
+            OWNER="${CLOUDISH_OWNER}"
+          fi
+          if [[ -z "${OWNER}" ]]; then
+            echo "Could not determine Cloudish owner; set the CLOUDISH_OWNER repo variable" >&2
+            exit 1
+          fi
+          echo "owner=${OWNER}" >> "${GITHUB_OUTPUT}"
+
+          echo "Waiting for Cloudish build ${BUILD_ID}..."
+          for attempt in $(seq 1 180); do
+            BUILD="$(curl -fsS "${CLOUDISH_API_URL}/images/builds/${BUILD_ID}" \
+              -H "Authorization: Bearer ${CLOUDISH_API_KEY}")"
+            STATUS="$(jq -r '.build.status' <<<"${BUILD}")"
+            echo "build ${BUILD_ID}: ${STATUS} (attempt ${attempt})"
+            case "${STATUS}" in
+              succeeded)
+                break
+                ;;
+              failed|cancelled|error)
+                echo "Build ${STATUS}; logs:" >&2
+                jq -r '.build.error // empty' <<<"${BUILD}" >&2 || true
+                jq -r '.build.logs // empty' <<<"${BUILD}" | tail -150 >&2 || true
+                exit 1
+                ;;
+            esac
+            if [[ "${attempt}" == "180" ]]; then
+              echo "Build did not finish within the timeout" >&2
+              exit 1
+            fi
+            sleep 5
+          done
+
+          PROJECT="$(curl -fsS "${CLOUDISH_API_URL}/projects/${OWNER}/${CLOUDISH_APP}" \
+            -H "Authorization: Bearer ${CLOUDISH_API_KEY}")"
+          URL="$(jq -r '.subdomain.url // empty' <<<"${PROJECT}")"
+          if [[ -z "${URL}" ]]; then
+            echo "Could not read the app URL from Cloudish" >&2
+            exit 1
+          fi
+          echo "url=${URL}" >> "${GITHUB_OUTPUT}"
+          echo "Deployed to ${URL}"
+
+      - name: Sync runtime config
+        if: steps.deploy.outputs.owner != ''
+        env:
+          OWNER: ${{ steps.deploy.outputs.owner }}
+        run: |
+          set -euo pipefail
+
+          if [[ -z "${GROQ_API_KEY}" && -z "${RESEND_API_KEY}" && -z "${EXA_API_KEY}" && -z "${RESEND_FROM}" && -z "${GROQ_MODEL}" ]]; then
+            echo "No runtime config set; skipping"
+            exit 0
+          fi
+          if [[ -z "${GROQ_API_KEY}" ]]; then
+            echo "Warning: GROQ_API_KEY is not set; agents will return an error" >&2
+          fi
+          if [[ -z "${EXA_API_KEY}" ]]; then
+            echo "Warning: EXA_API_KEY is not set; search-web will return an error" >&2
+          fi
+          if [[ -z "${RESEND_FROM}" ]]; then
+            echo "Warning: RESEND_FROM is not set; send-email will use its default sender" >&2
+          fi
+
+          BODY="$(jq -n \
+            --arg groq "${GROQ_API_KEY}" \
+            --arg resend "${RESEND_API_KEY}" \
+            --arg exa "${EXA_API_KEY}" \
+            --arg from "${RESEND_FROM}" \
+            --arg model "${GROQ_MODEL}" \
+            '{GROQ_API_KEY: $groq, RESEND_API_KEY: $resend, EXA_API_KEY: $exa,
+              RESEND_FROM: $from, GROQ_MODEL: $model}
+             | with_entries(select(.value != ""))')"
+
+          curl -fsS -X PUT "${CLOUDISH_API_URL}/projects/${OWNER}/${CLOUDISH_APP}/secrets" \
+            -H "Authorization: Bearer ${CLOUDISH_API_KEY}" \
+            -H "content-type: application/json" \
+            -d "${BODY}"
+          echo
+          echo "Runtime config synced"
+
+      - name: Verify health
+        env:
+          URL: ${{ steps.deploy.outputs.url }}
+        run: |
+          set -euo pipefail
+
+          for attempt in $(seq 1 36); do
+            if curl -fsS --max-time 10 "${URL%/}/healthz" >/dev/null; then
+              echo "Healthy at ${URL}"
+              exit 0
+            fi
+            echo "Waiting for ${URL} (attempt ${attempt})"
+            sleep 5
+          done
+
+          echo "App did not become healthy at ${URL}" >&2
+          exit 1

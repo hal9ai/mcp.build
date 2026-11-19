@@ -1,0 +1,4 @@
+# Gateway dependencies. Agent dependencies are installed from each
+# <agent>/requirements.txt by the Dockerfile.
+mcp==2.3.0
+uvicorn==0.54.0

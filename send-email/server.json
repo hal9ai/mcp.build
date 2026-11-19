@@ -3,7 +3,7 @@
   "name": "io.github.hal9ai/send-email",
   "title": "Send Email",
   "description": "Send emails from natural language prompts.",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "websiteUrl": "https://mcp.build/send-email/",
   "repository": {
     "url": "https://github.com/hal9ai/mcp.build",
@@ -14,7 +14,7 @@
   "remotes": [
     {
       "type": "streamable-http",
-      "url": "https://next.hal9.ai/mcp/mcpbuild/send-email"
+      "url": "https://mcp.build/mcp/send-email"
     }
   ]
 }

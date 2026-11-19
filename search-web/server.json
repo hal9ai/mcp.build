@@ -14,7 +14,7 @@
   "remotes": [
     {
       "type": "streamable-http",
-      "url": "https://next.hal9.ai/mcp/mcpbuild/search-web"
+      "url": "https://mcp.build/mcp/search-web"
     }
   ]
 }

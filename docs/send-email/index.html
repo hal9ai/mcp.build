@@ -85,14 +85,13 @@
       <div class="endpoint">
         <div>
           <span class="endpoint-label">MCP endpoint</span>
-          <code>https://next.hal9.ai/mcp/mcpbuild/send-email</code>
+          <code>https://mcp.build/mcp/send-email</code>
         </div>
-        <button class="endpoint-copy" data-copy="https://next.hal9.ai/mcp/mcpbuild/send-email">Copy</button>
+        <button class="endpoint-copy" data-copy="https://mcp.build/mcp/send-email">Copy</button>
       </div>
 
       <div class="actions">
-        <a class="btn btn-primary" href="https://claude.ai/customize/connectors?modal=add-custom-connector&connectorName=Send%20Email&connectorUrl=https%3A%2F%2Fnext.hal9.ai%2Fmcp%2Fmcpbuild%2Fsend-email">Add to Claude</a>
-        <a class="btn btn-ghost" href="https://next.hal9.ai/mcpbuild/send-email">Try now</a>
+        <a class="btn btn-primary" href="https://claude.ai/customize/connectors?modal=add-custom-connector&connectorName=Send%20Email&connectorUrl=https%3A%2F%2Fmcp.build%2Fmcp%2Fsend-email">Add to Claude</a>
         <a class="btn btn-ghost" href="https://github.com/hal9ai/mcp.build/tree/main/send-email">View source</a>
       </div>
       <p style="margin-top: 0.85rem; font-size: 0.8rem; color: var(--text-dim);">
@@ -154,7 +153,8 @@
       <h2>Self-host or run locally</h2>
       <p>
         send-email is open source and built on the <a href="https://github.com/hal9ai/hal9">Hal9</a>
-        agent structure. You can run it yourself instead of using the hosted version:
+        agent structure. The hosted version runs on
+        <a href="https://cloudish.ai">cloudish.ai</a>. You can also run it yourself:
       </p>
       <div class="pre-wrap">
         <pre>cd send-email
@@ -189,7 +189,10 @@ echo "send email to you@example.com with text hello!" | python app.py</pre>
     </div>
 
     <footer class="footer">
-      <span>mcp.build · open source MCPs for AI agents</span>
+      <span>
+        mcp.build · open source MCPs for AI agents ·
+        Hosted by <a href="https://cloudish.ai">cloudish.ai</a>
+      </span>
       <span>
         <a href="../">All MCPs</a>
         ·

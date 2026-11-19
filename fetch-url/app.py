@@ -7,6 +7,8 @@ fetches the page, strips HTML to plain text, and prints the content.
 
 import re
 import os
+import sys
+
 import requests
 from bs4 import BeautifulSoup
 
@@ -47,7 +49,7 @@ def fetch_url(url: str) -> str:
 
 
 if __name__ == "__main__":
-    prompt = input()
+    prompt = sys.stdin.read().strip()
     url = extract_url(prompt)
     if not url:
         print("Please provide a URL. Example: fetch https://example.com")

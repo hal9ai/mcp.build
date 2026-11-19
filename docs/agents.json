@@ -20,7 +20,7 @@
       "entry": "send-email/app.py",
       "runtime": "python",
       "io": "stdin/stdout",
-      "endpoint": "https://next.hal9.ai/mcp/mcpbuild/send-email",
+      "endpoint": "https://mcp.build/mcp/send-email",
       "dependencies": [
         "groq",
         "resend"
@@ -43,7 +43,7 @@
           "required": false
         }
       ],
-      "workflow": ".github/workflows/send-email.yaml",
+      "workflow": ".github/workflows/deploy-cloudish.yaml",
       "example_prompt": "send email to javier@hal9.ai with text hello!"
     },
     {
@@ -57,7 +57,7 @@
       "entry": "run-python/app.py",
       "runtime": "python",
       "io": "stdin/stdout",
-      "endpoint": "https://next.hal9.ai/mcp/mcpbuild/run-python",
+      "endpoint": "https://mcp.build/mcp/run-python",
       "dependencies": ["groq"],
       "env": [
         { "name": "GROQ_API_KEY", "required": true },
@@ -66,7 +66,7 @@
         { "name": "PIP_TIMEOUT", "required": false },
         { "name": "PACKAGES_DIR", "required": false }
       ],
-      "workflow": ".github/workflows/run-python.yaml",
+      "workflow": ".github/workflows/deploy-cloudish.yaml",
       "example_prompt": "install a package that calculates space orbits and compute the Hohmann transfer time from Earth to Mars and back, departing 2026-09-08"
     },
     {
@@ -80,7 +80,7 @@
       "entry": "search-web/app.py",
       "runtime": "python",
       "io": "stdin/stdout",
-      "endpoint": "https://next.hal9.ai/mcp/mcpbuild/search-web",
+      "endpoint": "https://mcp.build/mcp/search-web",
       "dependencies": [
         "requests"
       ],
@@ -94,7 +94,7 @@
           "required": false
         }
       ],
-      "workflow": ".github/workflows/search-web.yaml",
+      "workflow": ".github/workflows/deploy-cloudish.yaml",
       "example_prompt": "search for recent news about Model Context Protocol"
     },
     {
@@ -108,7 +108,7 @@
       "entry": "fetch-url/app.py",
       "runtime": "python",
       "io": "stdin/stdout",
-      "endpoint": "https://next.hal9.ai/mcp/mcpbuild/fetch-url",
+      "endpoint": "https://mcp.build/mcp/fetch-url",
       "dependencies": [
         "requests",
         "beautifulsoup4"
@@ -123,7 +123,7 @@
           "required": false
         }
       ],
-      "workflow": ".github/workflows/fetch-url.yaml",
+      "workflow": ".github/workflows/deploy-cloudish.yaml",
       "example_prompt": "fetch https://modelcontextprotocol.io"
     }
   ]

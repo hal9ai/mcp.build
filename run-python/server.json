@@ -3,7 +3,7 @@
   "name": "io.github.hal9ai/run-python",
   "title": "Run Python",
   "description": "Run Python code from natural language prompts, with optional PyPI package install.",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "websiteUrl": "https://mcp.build/run-python/",
   "repository": {
     "url": "https://github.com/hal9ai/mcp.build",
@@ -14,7 +14,7 @@
   "remotes": [
     {
       "type": "streamable-http",
-      "url": "https://next.hal9.ai/mcp/mcpbuild/run-python"
+      "url": "https://mcp.build/mcp/run-python"
     }
   ]
 }

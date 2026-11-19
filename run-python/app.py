@@ -332,5 +332,6 @@ def run(prompt: str) -> str:
 
 
 if __name__ == "__main__":
-    prompt = input()
+    # Read all of stdin so multi-line prompts are not truncated by input().
+    prompt = sys.stdin.read().strip()
     print(run(prompt))

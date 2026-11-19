@@ -2,24 +2,28 @@
 
 **mcp.build** is a community to build open source [MCPs](https://modelcontextprotocol.io) (Model Context Protocol servers) that adopted the [Hal9](https://github.com/hal9ai/hal9) open source agent structure for its ease of use for deployment and interoperability.
 
-**Website:** [hal9ai.github.io/mcp.build](https://hal9ai.github.io/mcp.build/) (GitHub Pages from [`/docs`](./docs))
+**Website:** [mcp.build](https://mcp.build/) — hosted on [cloudish.ai](https://cloudish.ai) from this repo's [`Dockerfile`](./Dockerfile) and [`docs/`](./docs).
 
 This repo is structured so **coding agents** (Claude Code, Grok Build, Cursor, Codex, …) can contribute with minimal guesswork. Start at [`AGENTS.md`](./AGENTS.md) and [`docs/llms.txt`](./docs/llms.txt).
 
 ## Why Hal9 agents?
 
-Hal9 agents are intentionally simple: read from stdin with `input()`, write to stdout with `print()`. No framework lock-in. That shape maps cleanly to how MCPs expose tools to models, and makes agents easy to:
+Hal9 agents are intentionally simple: read the prompt from stdin, write the result to stdout. No framework lock-in. That shape maps cleanly to how MCPs expose tools to models, and makes agents easy to:
 
 - **Develop** — plain Python, any library
-- **Deploy** — `hal9 deploy` or GitHub Actions to [hal9.com](https://hal9.com)
-- **Interoperate** — same agent can run as a chatbot, an API, or an MCP tool
+- **Deploy** — one Cloudish container serves every agent in this repo
+- **Interoperate** — the same agent runs as an MCP tool at `https://mcp.build/mcp/<id>`
 
 ## Agents
 
-| Agent | Description | Path |
-| --- | --- | --- |
-| **send-email** | Send emails with [Resend](https://resend.com) from natural language prompts (Groq tool use) | [`send-email/`](./send-email) |
-| **run-python** | Run Python and install PyPI packages from natural language prompts (Groq tool use) | [`run-python/`](./run-python) |
+| Agent | Description | Endpoint | Path |
+| --- | --- | --- | --- |
+| **send-email** | Send emails with [Resend](https://resend.com) from natural language prompts (Groq tool use) | `https://mcp.build/mcp/send-email` | [`send-email/`](./send-email) |
+| **run-python** | Run Python and install PyPI packages from natural language prompts (Groq tool use) | `https://mcp.build/mcp/run-python` | [`run-python/`](./run-python) |
+| **search-web** | Search the web via [Exa](https://exa.ai) from natural language prompts | `https://mcp.build/mcp/search-web` | [`search-web/`](./search-web) |
+| **fetch-url** | Fetch and extract the plain text of any URL (no API key) | `https://mcp.build/mcp/fetch-url` | [`fetch-url/`](./fetch-url) |
+
+Every endpoint is MCP **Streamable HTTP** (protocol `2025-06-18`) and exposes one tool named `chat` with `message` (required) and `chat_id` (optional).
 
 ### send-email
 
@@ -31,10 +35,10 @@ send email to javier@hal9.ai with text hello!
 
 The agent:
 
-1. Reads the prompt via `input()`
+1. Reads the prompt from stdin
 2. Calls a Groq model with a `send_email` tool definition
 3. Maps the tool call to the Resend API
-4. Prints the result via `print()`
+4. Prints the result to stdout
 
 **Environment variables**
 
@@ -55,17 +59,6 @@ export RESEND_API_KEY=...
 echo "send email to you@example.com with text hello!" | python app.py
 ```
 
-**Deploy to Hal9**
-
-```bash
-export HAL9_TOKEN=...   # from https://hal9.com/devs
-hal9 deploy send-email --name send-email --access public \
-  --title "Send Email" \
-  --description "Send emails via Resend using natural language prompts"
-```
-
-On push to `main`, if files under `send-email/` change, [`.github/workflows/send-email.yaml`](./.github/workflows/send-email.yaml) deploys a new version to Hal9 (same pattern as [hal9ai/hal9](https://github.com/hal9ai/hal9) app deploy workflows). Set the `HAL9_TOKEN` repository secret in GitHub Actions.
-
 **Publish to the MCP Registry**
 
 The hosted send-email MCP is published as a remote-only server to the [official MCP Registry](https://registry.modelcontextprotocol.io) under `io.github.hal9ai/send-email`. Metadata lives in [`send-email/server.json`](./send-email/server.json). On push to `main` (when `send-email/` changes), [`.github/workflows/publish-send-email.yaml`](./.github/workflows/publish-send-email.yaml) publishes it using GitHub OIDC — **no extra GitHub secrets**. The registry version is `version` in that file. If it is already published, the job skips. Bump `version` there to ship a new registry entry.
@@ -80,11 +73,11 @@ install a package that calculates space orbits and compute the Hohmann transfer 
 
 The agent:
 
-1. Reads the prompt via `input()`
+1. Reads the prompt from stdin
 2. Calls a Groq model with `install_packages` and `run_python` tool definitions
 3. Installs requested PyPI packages into a sandbox directory
 4. Executes the generated Python in a subprocess and captures stdout/stderr
-5. Prints the result via `print()`
+5. Prints the result to stdout
 
 **Environment variables**
 
@@ -105,66 +98,143 @@ export GROQ_API_KEY=...
 echo "print the first 10 primes" | python app.py
 ```
 
-**Deploy to Hal9**
-
-```bash
-export HAL9_TOKEN=...   # from https://hal9.com/devs
-hal9 deploy run-python --name run-python --access public \
-  --title "Run Python" \
-  --description "Run Python code from natural language prompts, with optional PyPI package install"
-```
-
-On push to `main`, if files under `run-python/` change, [`.github/workflows/run-python.yaml`](./.github/workflows/run-python.yaml) deploys a new version to Hal9. Set the `HAL9_DEVEL_TOKEN` / `HAL9_NEXT_TOKEN` repository secrets in GitHub Actions.
-
 **Publish to the MCP Registry**
 
 The hosted run-python MCP is published as a remote-only server to the [official MCP Registry](https://registry.modelcontextprotocol.io) under `io.github.hal9ai/run-python`. Metadata lives in [`run-python/server.json`](./run-python/server.json). On push to `main` (when `run-python/` changes), [`.github/workflows/publish-run-python.yaml`](./.github/workflows/publish-run-python.yaml) publishes it using GitHub OIDC. Bump `version` in `server.json` to ship a new registry entry.
 
-## Website (GitHub Pages)
+## Hosting on cloudish.ai
 
-Static site lives in [`docs/`](./docs) — no build step.
+`mcp.build` runs as **one Cloudish app** (`mcp-build`, container port `8080`). One container is required because a Cloudish custom domain binds a whole host: `/mcp/send-email` and `/mcp/run-python` share the `mcp.build` apex, and the same app also serves the static site from `docs/`.
+
+```
+mcp.build
+├── /                    docs/index.html
+├── /<id>/               docs/<id>/index.html
+├── /agents.json         machine-readable catalog
+├── /healthz             health check
+└── /mcp/<id>            MCP Streamable HTTP, tool "chat"
+```
+
+[`mcp_server/server.py`](./mcp_server/server.py) reads [`docs/agents.json`](./docs/agents.json), builds one MCP server per agent that has an `<id>/app.py`, and runs the agent as a subprocess with the prompt on stdin — so agent code is unchanged from the Hal9 version.
+
+### Run the gateway locally
+
+```bash
+pip install -r requirements.txt
+for req in */requirements.txt; do pip install -r "$req"; done
+uvicorn mcp_server.server:app --host 127.0.0.1 --port 8080
+```
+
+Then open <http://127.0.0.1:8080/> or point an MCP client at
+`http://127.0.0.1:8080/mcp/send-email`.
+
+### Deploy
+
+On push to `main` touching `mcp_server/`, `docs/`, `send-email/`, `run-python/`, the `Dockerfile`, or `requirements.txt`, [`.github/workflows/deploy-cloudish.yaml`](./.github/workflows/deploy-cloudish.yaml):
+
+1. Packages the committed tree with `git archive` (no `.git`, no local `.env`).
+2. `POST https://cloudish.ai/api/v1/projects` with `name=mcp-build`, `port=8080`, `alwaysOn=true`, `runtimeClass=gvisor`, and the build context.
+3. Polls the Cloudish build until it succeeds or fails.
+4. Syncs the API keys and optional `RESEND_FROM` / `GROQ_MODEL` config to the project's encrypted secrets/env.
+5. Waits for `<subdomain>/healthz`.
+
+The app is `alwaysOn` so MCP clients do not hit cold starts (roughly **$7.84/month** at the Cloudish `shared` size).
+
+**Required GitHub configuration**
+
+| Name | Kind | Purpose |
+| --- | --- | --- |
+| `CLOUDISH_API_KEY` | secret | Cloudish API key (create/claim one at [cloudish.ai](https://cloudish.ai)) |
+| `GROQ_API_KEY` | secret | Passed to the agents as a Cloudish project secret |
+| `RESEND_API_KEY` | secret | Passed to send-email as a Cloudish project secret |
+| `EXA_API_KEY` | secret | Passed to search-web as a Cloudish project secret |
+| `RESEND_FROM` | variable | Optional sender, e.g. `mcp.build <send@mcp.build>`; must be on a Resend-verified domain |
+| `GROQ_MODEL` | variable | Optional model override |
+| `CLOUDISH_OWNER` | variable | Optional fallback for the Cloudish alias if it cannot be read from the deploy response |
+
+### Custom domain (one-time)
+
+After the first successful deploy, register the domain and add the records Cloudish returns:
+
+```bash
+export CLOUDISH_API_KEY=...
+export OWNER=...   # your Cloudish alias
+
+curl -X POST "https://cloudish.ai/api/v1/projects/${OWNER}/mcp-build/domains" \
+  -H "Authorization: Bearer ${CLOUDISH_API_KEY}" \
+  -H "content-type: application/json" \
+  -d '{"host": "mcp.build"}'
+```
+
+Then, at the DNS provider:
+
+1. Add the returned TXT record, e.g. `_cloudish-challenge.mcp.build = cloudish-verify=...`.
+2. Point the apex `mcp.build` at `dig +short seattle.cloudish.ai` (`A` record, or CNAME flattening / ALIAS). Remove the old GitHub Pages `A` records for the apex.
+3. In the GitHub repo, go to **Settings → Pages** and clear the custom domain (`mcp.build`) so Pages no longer claims the apex. Optionally disable Pages or keep it as the `hal9ai.github.io/mcp.build` mirror.
+4. Cloudish verifies the records and issues TLS automatically.
+
+Before the DNS cutover, the app is reachable at its `<name>.cloudish.app` URL printed by the deploy job.
+
+### Security note
+
+`run-python` executes model-generated code. In this deployment it runs inside the app container, so it shares a process tree with the gateway that holds API keys. Mitigations:
+
+- Cloudish `runtimeClass=gvisor` for the container.
+- The gateway passes each agent only the env it needs (`run-python` does not receive `RESEND_API_KEY`).
+- `run-python/app.py` already strips API keys from the child process environment.
+
+Full per-request UID/namespace isolation for generated code is a follow-up.
+
+## Website
+
+The site is served by the same Cloudish container from [`docs/`](./docs) — no build step. `docs/` is still a valid GitHub Pages folder, so a branch-based Pages deploy can serve a mirror at `https://hal9ai.github.io/mcp.build/`, but `https://mcp.build/` is now the Cloudish app.
 
 | Path | Role |
 | --- | --- |
 | [`docs/index.html`](./docs/index.html) | Landing page — what mcp.build is + list of available MCPs |
 | [`docs/send-email/index.html`](./docs/send-email/index.html) | Dedicated page per MCP (usage, "Add to Claude", etc.) — template for new MCPs |
 | [`docs/run-python/index.html`](./docs/run-python/index.html) | run-python MCP page |
+| [`docs/installing-mcps/index.html`](./docs/installing-mcps/index.html) | How to connect an MCP from Claude, Claude Code, and other clients |
 | [`docs/css/styles.css`](./docs/css/styles.css) | Styles |
-| [`docs/agents.json`](./docs/agents.json) | Machine-readable agent catalog |
+| [`docs/agents.json`](./docs/agents.json) | Machine-readable agent catalog (also drives the gateway) |
 | [`docs/llms.txt`](./docs/llms.txt) | Short instructions for LLMs / agents |
-| [`AGENTS.md`](./AGENTS.md) | Full rules for coding agents |
-
-**Enable Pages:** repo **Settings → Pages → Build and deployment** → Source: **Deploy from a branch** → Branch: `main` → Folder: `/docs`.
+| [`mcp_server/server.py`](./mcp_server/server.py) | MCP gateway + static site |
+| [`Dockerfile`](./Dockerfile) | Cloudish build |
 
 ## Contributing an agent (MCP)
 
 This repo is designed so **coding agents** (Claude Code, Grok Build, Cursor, Codex, …)
 and humans can contribute a new MCP with minimal guesswork. Full checklist:
 [`AGENTS.md`](./AGENTS.md). Use [`send-email/`](./send-email) as the reference
-implementation and [`.github/workflows/send-email.yaml`](./.github/workflows/send-email.yaml)
-as the deploy pattern.
+implementation.
 
 ### Expected layout
 
 ```text
 # minimum
 my-tool/
-  app.py               # input() → work → print()
+  app.py               # stdin → work → stdout
   requirements.txt     # optional
-  hal9.yaml            # optional welcome
+  server.json          # registry metadata (name, version, remotes)
 
 # also update
-.github/workflows/my-tool.yaml
-docs/agents.json
-docs/my-tool/index.html   # dedicated docs page for the MCP
+.github/workflows/publish-my-tool.yaml   # MCP Registry publish
+docs/agents.json                          # id, description, endpoint
+docs/my-tool/index.html                   # dedicated docs page for the MCP
 README.md
 ```
+
+No per-agent deploy workflow is needed: the gateway discovers `<id>/app.py` from
+`docs/agents.json` and [`deploy-cloudish.yaml`](./.github/workflows/deploy-cloudish.yaml)
+redeploys the whole container.
 
 ### Minimal agent
 
 ```python
 # my-tool/app.py
-prompt = input()
+import sys
+
+prompt = sys.stdin.read().strip()
 # … call APIs, tools, models …
 print(result)
 ```
@@ -172,36 +242,21 @@ print(result)
 ### Steps
 
 1. Create a new folder at the repo root, e.g. `my-tool/`. Keep the name short, kebab-case.
-2. Add `app.py`. Use `input()` / `print()` (or any stdin/stdout) so the agent stays
+2. Add `app.py`. Read the prompt from stdin and write the result to stdout so the agent stays
    Hal9- and MCP-friendly. Prefer no `hal9` package unless you need session state.
 3. Add a `requirements.txt` if you need third-party packages.
 4. Optionally add `hal9.yaml` with a `welcome:` message.
-5. Add a GitHub Actions workflow, `.github/workflows/my-tool.yaml`, that deploys when
-   that folder changes:
-
-   ```yaml
-   on:
-     push:
-       branches: [main]
-       paths:
-         - my-tool/**
-         - .github/workflows/my-tool.yaml
-   # job: pip install hal9 → checkout → if my-tool/ changed:
-   hal9 deploy my-tool --name my-tool --access public \
-     --title "My Tool" --description "…"
-   ```
-
-   Secret: `HAL9_TOKEN` (agent runtime keys like `GROQ_API_KEY` are configured on the
-   Hal9 side / local env — never committed).
-6. Register the agent in [`docs/agents.json`](./docs/agents.json) (include an `id`,
-   `description`, and `docs_path` pointing at its docs page) and mention it in the
-   table above.
+5. Add `server.json` and a `.github/workflows/publish-my-tool.yaml` if you want the MCP Registry
+   entry (copy `send-email/server.json` and `publish-send-email.yaml`).
+6. Register the agent in [`docs/agents.json`](./docs/agents.json) with `id`, `name`,
+   `description`, `docs_path`, and `endpoint` (`https://mcp.build/mcp/<id>`). The gateway reads this
+   file, so the endpoint goes live on the next deploy.
 7. Add a dedicated docs page at `docs/<my-tool>/index.html` so it shows up at
-   `https://hal9ai.github.io/mcp.build/my-tool/` (or `https://mcp.build/my-tool/`).
-   Copy [`docs/send-email/index.html`](./docs/send-email/index.html) as a template —
-   it covers what the MCP does, how agents use it, and how to add it to Claude and
+   `https://mcp.build/my-tool/`. Copy [`docs/send-email/index.html`](./docs/send-email/index.html)
+   as a template — it covers what the MCP does, how agents use it, and how to add it to Claude and
    other MCP clients.
-8. Do not commit secrets; document required env vars in this README.
+8. Do not commit secrets; document required env vars in this README and add them to the
+   `AGENT_ENV` allowlist in [`mcp_server/server.py`](./mcp_server/server.py).
 
 ## License
 

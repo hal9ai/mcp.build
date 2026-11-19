@@ -6,6 +6,8 @@ and prints a formatted summary of the top results.
 """
 
 import os
+import sys
+
 import requests
 
 NUM_RESULTS = int(os.environ.get("SEARCH_NUM_RESULTS", "5"))
@@ -52,5 +54,5 @@ def search_web(query: str, num_results: int = NUM_RESULTS) -> str:
 
 
 if __name__ == "__main__":
-    query = input()
+    query = sys.stdin.read().strip()
     print(search_web(query))
