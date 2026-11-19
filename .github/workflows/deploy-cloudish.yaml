@@ -106,9 +106,29 @@ jobs:
             sleep 5
           done
 
-          PROJECT="$(curl -fsS "${CLOUDISH_API_URL}/projects/${OWNER}/${CLOUDISH_APP}" \
-            -H "Authorization: Bearer ${CLOUDISH_API_KEY}")"
-          URL="$(jq -r '.subdomain.url // empty' <<<"${PROJECT}")"
+          # The app is registered right after a successful build, but the
+          # project read can lag a few seconds or wrap the fields differently
+          # depending on the Cloudish API version, so retry and accept the
+          # known shapes.
+          URL=""
+          for attempt in $(seq 1 24); do
+            PROJECT="$(curl -fsS "${CLOUDISH_API_URL}/projects/${OWNER}/${CLOUDISH_APP}" \
+              -H "Authorization: Bearer ${CLOUDISH_API_KEY}")" || true
+            URL="$(jq -r '
+              .subdomain.url // .app.subdomain.url // .project.subdomain.url //
+              .url // .app.url // .project.url // empty' <<<"${PROJECT}" 2>/dev/null || true)"
+            if [[ -n "${URL}" ]]; then
+              break
+            fi
+            if [[ "${attempt}" == "1" ]]; then
+              echo "Project fields without a URL (attempt ${attempt}):" >&2
+              jq -c '{keys: keys, subdomain: (.subdomain // null),
+                      appKeys: (.app | if type == "object" then keys else . end),
+                      projectKeys: (.project | if type == "object" then keys else . end)}' \
+                <<<"${PROJECT}" 2>/dev/null >&2 || echo "${PROJECT}" >&2
+            fi
+            sleep 5
+          done
           if [[ -z "${URL}" ]]; then
             echo "Could not read the app URL from Cloudish" >&2
             exit 1
