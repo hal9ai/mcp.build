@@ -25,6 +25,7 @@ jobs:
       CLOUDISH_API_KEY: ${{ secrets.CLOUDISH_API_KEY }}
       CLOUDISH_OWNER: ${{ vars.CLOUDISH_OWNER }}
       CLOUDISH_APP: mcp-build
+      CLOUDISH_DOMAIN: ${{ vars.CLOUDISH_DOMAIN }}
       GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
       RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
       EXA_API_KEY: ${{ secrets.EXA_API_KEY }}
@@ -173,6 +174,44 @@ jobs:
             -d "${BODY}"
           echo
           echo "Runtime config synced"
+
+      - name: Ensure custom domain
+        if: steps.deploy.outputs.owner != '' && vars.CLOUDISH_DOMAIN != ''
+        env:
+          OWNER: ${{ steps.deploy.outputs.owner }}
+          DOMAIN: ${{ vars.CLOUDISH_DOMAIN }}
+        run: |
+          set -euo pipefail
+
+          # Idempotent: 409 means the host is already attached, which is fine.
+          # Prints the TXT challenge and the record the apex must point at.
+          APEX_IP="$(dig +short seattle.cloudish.ai A 2>/dev/null | head -1 || true)"
+          if [[ -z "${APEX_IP}" ]]; then
+            APEX_IP="$(curl -fsS 'https://dns.google/resolve?name=seattle.cloudish.ai&type=A' \
+              | jq -r '.Answer[]? | select(.type == 1) | .data' | head -1 || true)"
+          fi
+
+          for host in ${DOMAIN}; do
+            RESP="$(curl -sS -X POST "${CLOUDISH_API_URL}/projects/${OWNER}/${CLOUDISH_APP}/domains" \
+              -H "Authorization: Bearer ${CLOUDISH_API_KEY}" \
+              -H "content-type: application/json" \
+              -d "$(jq -cn --arg host "${host}" '{host: $host}')" \
+              -w $'\n%{http_code}')"
+            CODE="$(tail -n1 <<<"${RESP}")"
+            BODY="$(sed '$d' <<<"${RESP}")"
+
+            case "${CODE}" in
+              200|201) echo "${BODY}" | jq -r '"[\(.domain.host)] status=\(.domain.status)  TXT \(.domain.txtRecord.name) = \(.domain.txtRecord.value)"' ;;
+              409) echo "[${host}] already attached (409)" ;;
+              *) echo "Adding ${host} failed (${CODE}):" >&2; echo "${BODY}" >&2; exit 1 ;;
+            esac
+          done
+
+          echo
+          echo "DNS to set for ${DOMAIN}:"
+          echo "  TXT  _cloudish-challenge.<domain>  cloudish-verify=...   (from the line above)"
+          echo "  A    <apex>                        ${APEX_IP:-<dig seattle.cloudish.ai>}"
+          echo "Cloudish re-checks the TXT every minute; the certificate issues once TXT and A match."
 
       - name: Verify health
         env:
