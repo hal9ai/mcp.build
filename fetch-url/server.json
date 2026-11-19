@@ -2,8 +2,8 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.hal9ai/fetch-url",
   "title": "Fetch URL",
-  "description": "Fetch and extract the text content of any URL.",
-  "version": "0.0.2",
+  "description": "Fetch and extract the text content of any URL. Hosted at https://cloudish.ai.",
+  "version": "0.0.3",
   "websiteUrl": "https://mcp.build/fetch-url/",
   "repository": {
     "url": "https://github.com/hal9ai/mcp.build",

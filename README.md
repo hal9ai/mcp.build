@@ -6,6 +6,13 @@
 
 This repo is structured so **coding agents** (Claude Code, Grok Build, Cursor, Codex, …) can contribute with minimal guesswork. Start at [`AGENTS.md`](./AGENTS.md) and [`docs/llms.txt`](./docs/llms.txt).
 
+## Hosting
+
+The website and every MCP endpoint in this repo are hosted on
+**[cloudish.ai](https://cloudish.ai)**. A single Cloudish container, built from this repo's
+[`Dockerfile`](./Dockerfile), serves `docs/` at `https://mcp.build/` and each agent at
+`https://mcp.build/mcp/<id>` — see [Deploy](#deploy) for how it ships.
+
 ## Why Hal9 agents?
 
 Hal9 agents are intentionally simple: read the prompt from stdin, write the result to stdout. No framework lock-in. That shape maps cleanly to how MCPs expose tools to models, and makes agents easy to:
